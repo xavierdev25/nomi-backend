@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code AulaRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class AulaRepositoryAdapter implements AulaRepositoryPort {

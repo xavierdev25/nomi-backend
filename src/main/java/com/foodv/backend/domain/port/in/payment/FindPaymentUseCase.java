@@ -4,6 +4,9 @@ import com.foodv.backend.domain.model.payment.Payment;
 
 import java.util.List;
 
+/**
+ * Consulta de pagos.
+ */
 public interface FindPaymentUseCase {
 
     Payment findById(Long id);

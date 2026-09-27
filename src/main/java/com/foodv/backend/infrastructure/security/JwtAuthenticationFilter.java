@@ -17,6 +17,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Autentica cada petición con el access token de la cabecera {@code Authorization: Bearer}.
+ *
+ * <p>Un token ausente, inválido, expirado, revocado o emitido antes de un cierre de sesiones
+ * global no corta la petición: sigue como anónima y la autorización de la ruta decide
+ * (responde {@code 401}, ver {@code SecurityConfig}).
+ */
 @Order(2)
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

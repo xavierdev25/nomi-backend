@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Cambia la contraseña tras verificar la actual y cierra todas las sesiones: revoca los
+ * refresh tokens e invalida los access tokens emitidos antes del cambio.
+ */
 @Service
 public class ChangePasswordHandler implements ChangePasswordUseCase {
 

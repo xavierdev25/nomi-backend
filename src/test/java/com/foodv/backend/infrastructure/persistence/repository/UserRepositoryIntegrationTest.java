@@ -15,6 +15,10 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Consultas del repositorio de usuarios contra PostgreSQL real: búsqueda por email y borrado
+ * lógico. Necesita PostgreSQL en {@code localhost:5432}.
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional

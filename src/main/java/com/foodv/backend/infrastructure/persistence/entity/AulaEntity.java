@@ -3,6 +3,9 @@ package com.foodv.backend.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Tabla {@code aulas}; {@code codigo} es único.
+ */
 @Entity
 @Table(name = "aulas")
 @Getter

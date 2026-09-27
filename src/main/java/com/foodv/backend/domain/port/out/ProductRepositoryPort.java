@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia del catálogo. Las lecturas excluyen productos borrados lógicamente.
+ */
 public interface ProductRepositoryPort {
 
     Product save(Product product);
@@ -37,6 +40,15 @@ public interface ProductRepositoryPort {
                                 BigDecimal precioMin, BigDecimal precioMax,
                                 Boolean disponible, PageQuery query);
 
+    /**
+     * Descuenta stock de forma atómica solo si alcanza, y actualiza {@code disponible}.
+     * Una cantidad negativa devuelve stock.
+     *
+     * @return filas actualizadas: 0 si no había stock suficiente
+     */
     int decrementStock(Long productId, int cantidad);
+    /**
+     * Devuelve stock y actualiza {@code disponible}.
+     */
     int incrementStock(Long productId, int cantidad);
 }

@@ -21,6 +21,10 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Consultas del repositorio de productos contra PostgreSQL real: búsqueda con filtros y
+ * borrado lógico. Necesita PostgreSQL en {@code localhost:5432}.
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -40,7 +44,6 @@ class ProductRepositoryIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Buscar store existente o usar ID 1 si no hay ninguno en BD limpia de CI
         testStoreId = storeJpaRepository.findAll().stream()
                 .findFirst()
                 .map(s -> s.getId())

@@ -6,6 +6,9 @@ import com.foodv.backend.domain.port.out.AulaRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Crea un aula activa; el código debe ser único.
+ */
 @Service
 @RequiredArgsConstructor
 public class CreateAulaHandler implements CreateAulaUseCase {

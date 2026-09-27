@@ -9,6 +9,10 @@ import org.springframework.data.domain.Sort;
 
 import java.util.function.Function;
 
+/**
+ * Conversión entre la paginación del dominio ({@code PageQuery}/{@code PagedResult}) y la de
+ * Spring Data.
+ */
 public final class PagingMapper {
 
     private PagingMapper() {}

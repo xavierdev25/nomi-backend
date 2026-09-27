@@ -13,8 +13,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 /**
- * Centraliza las verificaciones de ownership (IDOR) y RBAC contextual.
- * Cualquier endpoint que reciba ids debe pasar por aquí antes de ejecutar la acción.
+ * Controles de ownership contra el acceso a recursos ajenos (IDOR). Todo endpoint que reciba
+ * el id de un recurso de otro usuario debe pasar por aquí antes de actuar.
  */
 @Component
 public class OwnershipService {
@@ -73,6 +73,10 @@ public class OwnershipService {
         throw new AccessDeniedException("No tienes permiso sobre esta orden");
     }
 
+    /**
+     * Acceden a un pedido: un administrador, su dueño, el comercio de la tienda que lo recibe y
+     * el repartidor asignado.
+     */
     public boolean canAccessOrder(User current, Order order) {
         if (current == null || order == null) return false;
         if (isAdmin(current)) return true;
@@ -88,6 +92,11 @@ public class OwnershipService {
         return false;
     }
 
+    /**
+     * Tienda del usuario autenticado.
+     *
+     * @throws org.springframework.security.access.AccessDeniedException si no tiene tienda
+     */
     public Long resolveStoreIdForUser(User current) {
         if (current == null) throw new AccessDeniedException("No autenticado");
         return storeRepositoryPort.findByOwnerId(current.getId())

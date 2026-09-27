@@ -2,6 +2,11 @@ package com.foodv.backend.domain.model.order;
 
 import java.util.Set;
 
+/**
+ * Estados del pedido y sus transiciones válidas:
+ * {@code PENDIENTE → PREPARANDO → LISTO_PARA_RECOGER → EN_CAMINO → ENTREGADO}, y
+ * {@code PENDIENTE → CANCELADO}. {@code ENTREGADO} y {@code CANCELADO} son finales.
+ */
 public enum OrderStatus {
     PENDIENTE,
     PREPARANDO,
@@ -10,6 +15,9 @@ public enum OrderStatus {
     ENTREGADO,
     CANCELADO;
 
+    /**
+     * Única fuente de verdad de la máquina de estados del pedido.
+     */
     public boolean canTransitionTo(OrderStatus nextStatus) {
         return switch (this) {
             case PENDIENTE -> Set.of(PREPARANDO, CANCELADO).contains(nextStatus);
@@ -20,6 +28,9 @@ public enum OrderStatus {
         };
     }
 
+    /**
+     * Nombre legible para mensajes al usuario.
+     */
     public String enEspanol() {
         return switch (this) {
             case PENDIENTE -> "Pendiente";

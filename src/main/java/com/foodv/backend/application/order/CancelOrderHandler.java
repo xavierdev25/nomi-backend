@@ -17,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Cancela un pedido si su estado lo permite (solo {@code PENDIENTE}), devuelve el stock y
+ * notifica al estudiante y a la tienda.
+ *
+ * <p>No consulta el estado del pago: si MercadoPago ya aprobó el pago pero el webhook aún no
+ * llegó, el pedido se cancela sin reembolso (ver la auditoría técnica, A3).
+ */
 @Service
 @RequiredArgsConstructor
 public class CancelOrderHandler implements CancelOrderUseCase {
@@ -38,7 +45,6 @@ public class CancelOrderHandler implements CancelOrderUseCase {
                     "La orden no puede cancelarse en estado: " + existing.getStatus().enEspanol());
         }
 
-        // Restaurar stock al cancelar
         if (existing.getItems() != null) {
             for (OrderItem item : existing.getItems()) {
                 productRepositoryPort.findById(item.getProductId()).ifPresent(product -> {
@@ -99,7 +105,7 @@ public class CancelOrderHandler implements CancelOrderUseCase {
                     "Tu pedido #" + cancelled.getId() + " fue cancelado"
             );
         } catch (Exception ignore) {
-            // Las notificaciones nunca deben revertir la cancelación
+            // Una notificación fallida nunca debe revertir la cancelación.
         }
     }
 }

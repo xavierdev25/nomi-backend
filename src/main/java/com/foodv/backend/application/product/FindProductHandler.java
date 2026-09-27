@@ -8,13 +8,15 @@ import com.foodv.backend.domain.port.in.product.FindProductUseCase;
 import com.foodv.backend.domain.port.out.ProductRepositoryPort;
 import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Consulta y búsqueda del catálogo.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,7 +31,6 @@ public class FindProductHandler implements FindProductUseCase {
     }
 
     @Override
-    @Cacheable(value = "products", key = "#storeId")
     public List<Product> findByStoreId(Long storeId) {
         return productRepositoryPort.findByStoreId(storeId);
     }

@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Integración con MercadoPago: crea preferencias de pago, consulta su estado y reembolsa.
+ * {@code refundPayment} existe pero ningún flujo lo invoca todavía.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -47,6 +51,8 @@ public class MercadoPagoAdapter implements PaymentGatewayPort {
                     .unitPrice(request.amount())
                     .build();
 
+            // Las URLs de retorno apuntan al propio webhook: tras pagar, el navegador no vuelve a la app
+            // (ver la auditoría técnica, M8).
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                     .success(request.notificationUrl())
                     .failure(request.notificationUrl())
@@ -56,6 +62,7 @@ public class MercadoPagoAdapter implements PaymentGatewayPort {
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(List.of(item))
                     .backUrls(backUrls)
+                    // MercadoPago solo acepta URLs de notificación https; en desarrollo se omite.
                     .notificationUrl(
                             (request.notificationUrl() != null && request.notificationUrl().startsWith("https://"))
                                     ? request.notificationUrl()

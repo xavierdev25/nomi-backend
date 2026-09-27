@@ -15,6 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Avanza el estado de un pedido, registra el cambio en el historial y publica
+ * {@link OrderStatusChangedEvent}.
+ *
+ * <p>Hoy ningún componente escucha ese evento, así que los cambios de estado no generan
+ * notificaciones. Tampoco se verifica el código de confirmación al marcar {@code ENTREGADO}.
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateOrderStatusHandler implements UpdateOrderStatusUseCase {
@@ -43,7 +50,6 @@ public class UpdateOrderStatusHandler implements UpdateOrderStatusUseCase {
             metricsPort.recordOrderCancelled();
         }
 
-        // Only async notifications are published here to avoid duplicate delivery and keep status changes non-blocking.
         eventPublisher.publishEvent(new OrderStatusChangedEvent(
                 updatedOrder.getId(),
                 updatedOrder.getUserId(),
@@ -56,6 +62,9 @@ public class UpdateOrderStatusHandler implements UpdateOrderStatusUseCase {
         return updatedOrder;
     }
 
+    /**
+     * Evento de aplicación publicado tras cada cambio de estado.
+     */
     public record OrderStatusChangedEvent(
             Long orderId,
             Long userId,

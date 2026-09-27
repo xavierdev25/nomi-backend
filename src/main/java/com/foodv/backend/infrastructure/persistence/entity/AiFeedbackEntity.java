@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code ai_recommendation_feedback}; única por usuario y producto.
+ */
 @Entity
 @Table(name = "ai_recommendation_feedback")
 @Getter

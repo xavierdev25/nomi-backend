@@ -8,6 +8,9 @@ import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Borrado lógico de un usuario; revoca sus sesiones.
+ */
 @Service
 public class DeleteUserHandler implements DeleteUserUseCase {
 

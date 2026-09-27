@@ -7,6 +7,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+/**
+ * Habilita {@code @Async} y define el pool {@code notificationExecutor}. Hoy ningún
+ * componente lo usa.
+ */
 @Configuration
 @EnableAsync
 public class AsyncConfig {

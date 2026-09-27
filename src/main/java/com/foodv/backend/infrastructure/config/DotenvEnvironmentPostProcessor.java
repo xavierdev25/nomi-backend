@@ -2,45 +2,67 @@ package com.foodv.backend.infrastructure.config;
 
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.core.Ordered;
+import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.StandardEnvironment;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Carga el archivo .env del directorio actual y lo agrega como property source de mayor prioridad
- * que application.yaml pero menor que las variables de entorno reales y system properties.
+ * Carga el archivo {@code .env} del directorio de trabajo como fuente de propiedades: por
+ * debajo de las variables de entorno reales, las system properties y los argumentos, pero por
+ * encima de {@code application.yaml}.
  *
- * Comportamiento:
- *  - addFirst() para que sus claves sobrescriban application.yaml.
- *  - Soporta líneas en blanco, comentarios (#), KEY=VAL.
- *  - Soporta valores entre comillas (simples o dobles) y permite '=' en el valor.
- *  - No falla si .env no existe.
+ * <p>Está registrado en {@code META-INF/spring.factories}: Spring Boot solo descubre los
+ * {@code EnvironmentPostProcessor} por ahí. Corre antes que
+ * {@code ConfigDataEnvironmentPostProcessor} para que placeholders como
+ * {@code ${SPRING_PROFILES_ACTIVE}} ya lo vean al resolver los perfiles.
+ *
+ * <p>Formato: {@code CLAVE=valor}; líneas vacías y comentarios {@code #} se ignoran; un valor
+ * entre comillas es literal ({@code #} incluido); sin comillas, {@code " #"} inicia un
+ * comentario en línea.
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 10)
+@Order(ConfigDataEnvironmentPostProcessor.ORDER - 1)
 public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-    private static final String PROPERTY_SOURCE_NAME = "dotenvProperties";
+    static final String PROPERTY_SOURCE_NAME = "dotenvProperties";
+
+    private final Path dotenvPath;
+
+    public DotenvEnvironmentPostProcessor() {
+        this(Path.of(".env"));
+    }
+
+    DotenvEnvironmentPostProcessor(Path dotenvPath) {
+        this.dotenvPath = dotenvPath;
+    }
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, Object> properties = loadDotenv();
-        if (!properties.isEmpty()) {
-            environment.getPropertySources().addFirst(
-                    new MapPropertySource(PROPERTY_SOURCE_NAME, properties)
-            );
+        if (properties.isEmpty()) return;
+
+        MapPropertySource source = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
+        MutablePropertySources sources = environment.getPropertySources();
+        if (sources.contains(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME)) {
+            sources.addAfter(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, source);
+        } else {
+            sources.addLast(source);
         }
     }
 
     private Map<String, Object> loadDotenv() {
         Map<String, Object> properties = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(".env"))) {
+        try (BufferedReader reader = Files.newBufferedReader(dotenvPath, StandardCharsets.UTF_8)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String trimmed = line.trim();
@@ -49,31 +71,21 @@ public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor 
                 if (idx < 0) continue;
                 String key = trimmed.substring(0, idx).trim();
                 if (key.isEmpty()) continue;
-                String value = trimmed.substring(idx + 1).trim();
-                value = stripQuotes(value);
-                value = stripInlineComment(value);
-                properties.put(key, value);
+                properties.put(key, parseValue(trimmed.substring(idx + 1).trim()));
             }
         } catch (IOException e) {
-            // .env opcional: nada que hacer
+            // Sin .env (o ilegible): la configuración sale solo del entorno y de application.yaml.
         }
         return properties;
     }
 
-    private String stripQuotes(String value) {
-        if (value.length() >= 2) {
-            if ((value.startsWith("\"") && value.endsWith("\"")) ||
-                (value.startsWith("'") && value.endsWith("'"))) {
-                return value.substring(1, value.length() - 1);
-            }
+    private static String parseValue(String raw) {
+        boolean quoted = raw.length() >= 2
+                && ((raw.startsWith("\"") && raw.endsWith("\"")) || (raw.startsWith("'") && raw.endsWith("'")));
+        if (quoted) {
+            return raw.substring(1, raw.length() - 1);
         }
-        return value;
-    }
-
-    private String stripInlineComment(String value) {
-        // No quitar # si el valor venía entre comillas (lo cual ya quitamos arriba),
-        // o si estamos seguros que no es un comentario inline.
-        int hash = value.indexOf(" #");
-        return hash >= 0 ? value.substring(0, hash).trim() : value;
+        int hash = raw.indexOf(" #");
+        return hash >= 0 ? raw.substring(0, hash).trim() : raw;
     }
 }

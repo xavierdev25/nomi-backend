@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Aulas del campus. La lectura es para usuarios autenticados; el resto, solo para administradores.
+ */
 @Tag(name = "Aulas")
 @RestController
 @RequestMapping("/aulas")

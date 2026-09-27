@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Actualización parcial de una tienda; los campos {@code null} conservan su valor.
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateStoreHandler implements UpdateStoreUseCase {

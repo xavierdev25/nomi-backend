@@ -6,6 +6,9 @@ import com.foodv.backend.infrastructure.web.dto.favorite.FavoriteProductResponse
 import com.foodv.backend.infrastructure.web.dto.favorite.FavoriteStoreResponse;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre favoritos del dominio y sus DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface FavoriteWebMapper {
 

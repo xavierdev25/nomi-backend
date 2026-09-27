@@ -6,6 +6,9 @@ import com.foodv.backend.infrastructure.web.dto.payment.CreatePaymentRequest;
 import com.foodv.backend.infrastructure.web.dto.payment.PaymentResponse;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de pagos.
+ */
 @Mapper(componentModel = "spring")
 public interface PaymentWebMapper {
 

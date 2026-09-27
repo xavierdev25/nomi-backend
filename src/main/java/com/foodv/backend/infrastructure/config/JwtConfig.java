@@ -8,6 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Configuración de JWT ({@code jwt.*}), validada al arrancar: la aplicación no inicia con un
+ * secreto de menos de 32 bytes, expiraciones inválidas o sin emisor.
+ */
 @Configuration
 @ConfigurationProperties(prefix = "jwt")
 @Getter

@@ -13,6 +13,9 @@ import org.mapstruct.Named;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de tiendas.
+ */
 @Mapper(componentModel = "spring")
 public interface StoreWebMapper {
 

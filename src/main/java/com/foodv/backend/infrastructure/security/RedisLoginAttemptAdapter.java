@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 /**
- * Implementación distribuida del rate limit por intentos de login usando Redis.
- * Reemplaza al ConcurrentHashMap en memoria que no funcionaba con múltiples réplicas.
+ * Intentos fallidos de login por email en Redis: al quinto el email queda bloqueado 15
+ * minutos desde el primer fallo.
  */
 @Component
 public class RedisLoginAttemptAdapter implements LoginAttemptPort {

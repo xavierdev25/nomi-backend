@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Consulta de pagos.
+ */
 @Service
 @RequiredArgsConstructor
 public class FindPaymentHandler implements FindPaymentUseCase {

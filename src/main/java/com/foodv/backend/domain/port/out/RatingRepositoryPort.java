@@ -6,6 +6,9 @@ import com.foodv.backend.domain.model.rating.StoreRatingSummary;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de calificaciones.
+ */
 public interface RatingRepositoryPort {
 
     Rating save(Rating rating);

@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code ProductRepositoryPort}. Excluye productos borrados y aplica el
+ * borrado lógico.
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductRepositoryAdapter implements ProductRepositoryPort {

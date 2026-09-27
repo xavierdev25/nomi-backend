@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de valoraciones de IA.
+ */
 @Repository
 public interface AiFeedbackRepository extends JpaRepository<AiFeedbackEntity, Long> {
 

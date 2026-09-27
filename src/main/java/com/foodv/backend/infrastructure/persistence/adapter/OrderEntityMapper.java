@@ -7,6 +7,9 @@ import com.foodv.backend.infrastructure.persistence.entity.OrderItemEntity;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre {@code Order}/{@code OrderItem} y sus entidades.
+ */
 @Mapper(componentModel = "spring")
 public interface OrderEntityMapper {
 

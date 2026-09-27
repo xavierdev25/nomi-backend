@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code ratings}; una por pedido.
+ */
 @Entity
 @Table(
         name = "ratings",

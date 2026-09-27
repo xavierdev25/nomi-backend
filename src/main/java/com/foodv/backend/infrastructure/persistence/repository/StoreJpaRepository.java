@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de tiendas.
+ */
 @Repository
 public interface StoreJpaRepository extends JpaRepository<StoreEntity, Long> {
 

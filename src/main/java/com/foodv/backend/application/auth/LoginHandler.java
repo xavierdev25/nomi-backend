@@ -14,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Inicio de sesión.
+ *
+ * <p>Tras 5 intentos fallidos el email queda bloqueado 15 minutos. Email inexistente, contraseña
+ * incorrecta y usuario inactivo dan el mismo error, para no revelar qué cuentas existen.
+ */
 @Service
 public class LoginHandler implements LoginUseCase {
 

@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Tabla {@code orders}. Las líneas ({@code order_items}) se cargan de forma perezosa: las
+ * consultas del repositorio usan un entity graph para traerlas juntas.
+ */
 @Entity
 @Table(name = "orders")
 @Getter

@@ -25,6 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Crea un pedido en {@code PENDIENTE}.
+ *
+ * <p>Reglas: tienda activa, aula existente, todos los productos de esa tienda, activos,
+ * disponibles y con stock. El stock se reserva al crear el pedido, antes de pagar. Importes:
+ * {@code total} = subtotal de productos; propina de 0 al 50 % del subtotal; tarifa de servicio
+ * y comisión fijas.
+ */
 @Service
 @RequiredArgsConstructor
 public class CreateOrderHandler implements CreateOrderUseCase {
@@ -79,6 +87,7 @@ public class CreateOrderHandler implements CreateOrderUseCase {
             if (item.cantidad() == null || item.cantidad() < 1) {
                 throw new IllegalArgumentException("Cantidad inválida para producto " + item.productId());
             }
+            // El mismo producto en varias líneas se suma antes de validar el stock.
             aggregatedQuantities.merge(item.productId(), item.cantidad(), Integer::sum);
         }
 
@@ -101,6 +110,8 @@ public class CreateOrderHandler implements CreateOrderUseCase {
                 throw new IllegalArgumentException("Stock insuficiente para: " + product.getNombre());
             }
 
+            // Descuento atómico: si otro pedido se llevó el stock entre la lectura y aquí, falla en vez de
+            // dejarlo negativo.
             int updated = productRepositoryPort.decrementStock(productId, cantidad);
             if (updated == 0) {
                 throw new IllegalArgumentException(

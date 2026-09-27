@@ -12,6 +12,12 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * Emisión y validación de JWT firmados con HMAC-SHA256 (jjwt).
+ *
+ * <p>Los tokens no llevan {@code jti}: dos emitidos en el mismo segundo para el mismo usuario
+ * son idénticos (ver la auditoría técnica, M3).
+ */
 @Component
 public class JwtTokenServiceAdapter implements TokenServicePort {
 

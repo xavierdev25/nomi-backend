@@ -21,6 +21,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/**
+ * Alta de usuarios: la contraseña siempre se guarda hasheada y el email debe ser único.
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CreateUserHandler - Creación de usuarios")
 class CreateUserHandlerTest {

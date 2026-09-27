@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
@@ -17,12 +18,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Llama al microservicio de IA con timeouts configurados en {@code RestClientConfig}.
- * Si la IA no responde, Resilience4j abre el circuito y retorna una respuesta vacía.
+ * Cliente HTTP del servicio de IA ({@code POST /api/ai/recommendations}), autenticado con la
+ * cabecera {@code X-API-Key}. Envía también {@code X-FoodV-User-Id} para que el servicio aplique
+ * su límite de peticiones por estudiante y no uno global para todo el backend.
+ *
+ * <p>Un circuit breaker de Resilience4j protege la llamada: ante error, timeout o circuito
+ * abierto se devuelve una respuesta vacía con {@code generatedBy = "FALLBACK"} en lugar de
+ * propagar el fallo. Los errores 4xx también caen en esa respuesta, pero no abren el circuito
+ * ({@code AiResilienceConfig}). Los timeouts están en {@code RestClientConfig}.
  */
 @Slf4j
 @Component
 public class AiServiceAdapter implements AiRecommendationPort {
+
+    /** Cabecera con el estudiante que pide, para el límite de peticiones del servicio de IA. */
+    public static final String USER_ID_HEADER = "X-FoodV-User-Id";
 
     private final RestClient restClient;
     private final String aiServiceUrl;
@@ -62,6 +72,7 @@ public class AiServiceAdapter implements AiRecommendationPort {
                 .uri(aiServiceUrl + "/api/ai/recommendations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-API-Key", aiSecretKey)
+                .header(USER_ID_HEADER, String.valueOf(request.getUserId()))
                 .body(requestBody)
                 .retrieve()
                 .body(Map.class);
@@ -69,8 +80,18 @@ public class AiServiceAdapter implements AiRecommendationPort {
         return parseResponse(response);
     }
 
+    /**
+     * Respuesta de degradación: sin recomendaciones, pero la pantalla del cliente sigue funcionando.
+     */
     private AiRecommendationResponse getRecommendationsFallback(AiRecommendationRequest request, Throwable throwable) {
-        log.warn("Fallback IA activado: {}", throwable.getMessage());
+        if (throwable instanceof HttpClientErrorException clientError) {
+            // Un 4xx no es una caída del servicio: es un contrato roto (422) o una cuota (429).
+            String body = clientError.getResponseBodyAsString();
+            log.error("Servicio de IA rechazó la petición: {} {}", clientError.getStatusCode(),
+                    body.length() > 300 ? body.substring(0, 300) + "…" : body);
+        } else {
+            log.warn("Fallback IA activado: {}", throwable.getMessage());
+        }
         return AiRecommendationResponse.builder()
                 .userId(request.getUserId())
                 .recommendations(List.of())

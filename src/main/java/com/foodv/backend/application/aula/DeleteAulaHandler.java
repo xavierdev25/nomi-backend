@@ -6,6 +6,9 @@ import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Elimina un aula.
+ */
 @Service
 @RequiredArgsConstructor
 public class DeleteAulaHandler implements DeleteAulaUseCase {

@@ -5,6 +5,10 @@ import com.foodv.backend.infrastructure.persistence.entity.StoreEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Mapeo MapStruct entre {@code Store} y {@code StoreEntity}. {@code deletedAt} no se copia
+ * desde el dominio.
+ */
 @Mapper(componentModel = "spring")
 public interface StoreEntityMapper {
 

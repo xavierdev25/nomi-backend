@@ -6,6 +6,9 @@ import com.foodv.backend.infrastructure.web.dto.rating.RatingResponse;
 import com.foodv.backend.infrastructure.web.dto.rating.StoreRatingSummaryResponse;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de calificaciones.
+ */
 @Mapper(componentModel = "spring")
 public interface RatingWebMapper {
 

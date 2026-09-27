@@ -5,8 +5,8 @@ import com.foodv.backend.domain.port.out.TokenServicePort;
 import org.springframework.stereotype.Service;
 
 /**
- * Wrapper legacy alrededor del {@link TokenServicePort} para mantener compatibilidad.
- * Nuevos clientes deben inyectar {@link TokenServicePort} directamente.
+ * Envoltorio heredado de {@code TokenServicePort}. No se usa: el código nuevo debe inyectar el
+ * puerto directamente.
  */
 @Service
 public class JwtService {

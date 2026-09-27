@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de pagos.
+ */
 @Repository
 public interface PaymentJpaRepository extends JpaRepository<PaymentEntity, Long> {
 

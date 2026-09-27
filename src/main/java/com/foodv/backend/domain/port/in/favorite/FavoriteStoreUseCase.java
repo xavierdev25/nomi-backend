@@ -5,6 +5,9 @@ import com.foodv.backend.domain.model.store.Store;
 
 import java.util.List;
 
+/**
+ * Gestión de tiendas favoritas de un usuario.
+ */
 public interface FavoriteStoreUseCase {
 
     FavoriteStore addStoreFavorite(Long userId, Long storeId);

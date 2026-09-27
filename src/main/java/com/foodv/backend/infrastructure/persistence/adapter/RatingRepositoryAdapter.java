@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code RatingRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class RatingRepositoryAdapter implements RatingRepositoryPort {

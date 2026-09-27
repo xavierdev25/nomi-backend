@@ -8,6 +8,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Borrado lógico de un producto.
+ */
 @Service
 @RequiredArgsConstructor
 public class DeleteProductHandler implements DeleteProductUseCase {

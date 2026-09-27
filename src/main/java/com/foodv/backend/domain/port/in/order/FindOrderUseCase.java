@@ -5,6 +5,9 @@ import com.foodv.backend.domain.common.PagedResult;
 import com.foodv.backend.domain.model.order.Order;
 import com.foodv.backend.domain.model.order.OrderStatus;
 
+/**
+ * Consulta de pedidos, con control de acceso en las variantes {@code ForUser}.
+ */
 public interface FindOrderUseCase {
 
     Order findById(Long id);

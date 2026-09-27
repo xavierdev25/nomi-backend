@@ -7,6 +7,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code payments}; {@code external_id} es único.
+ */
 @Entity
 @Table(name = "payments")
 @Getter

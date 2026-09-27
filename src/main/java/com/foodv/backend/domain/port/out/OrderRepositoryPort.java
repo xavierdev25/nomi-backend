@@ -8,6 +8,9 @@ import com.foodv.backend.domain.model.order.OrderStatus;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de pedidos. Todas las lecturas devuelven el pedido con sus líneas cargadas.
+ */
 public interface OrderRepositoryPort {
     Order save(Order order);
     Optional<Order> findById(Long id);

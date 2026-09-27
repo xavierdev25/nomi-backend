@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Producto marcado como favorito por un usuario.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

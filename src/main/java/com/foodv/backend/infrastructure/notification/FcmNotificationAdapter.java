@@ -9,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Notificaciones push por Firebase Cloud Messaging, al tema {@code user-{id}}. Si Firebase no
+ * está configurado, los envíos se omiten; un error de envío se registra y no se propaga.
+ */
 @Slf4j
 @Component
 public class FcmNotificationAdapter implements PushNotificationPort {

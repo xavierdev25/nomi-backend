@@ -8,6 +8,7 @@ import com.foodv.backend.infrastructure.web.dto.auth.AuthResponse;
 import com.foodv.backend.infrastructure.web.dto.auth.LoginRequest;
 import com.foodv.backend.infrastructure.web.dto.auth.RegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Registro, login, renovación de tokens y logout.
+ */
 @Tag(name = "Autenticación")
 @RestController
 @RequestMapping("/auth")
@@ -111,6 +115,15 @@ public class AuthController {
         );
     }
 
-    public record RefreshRequest(@NotBlank(message = "refreshToken obligatorio") String refreshToken) {}
-    public record LogoutRequest(String refreshToken) {}
+    @Schema(description = "Renovación de sesión.")
+    public record RefreshRequest(
+            @Schema(description = "Refresh token vigente; queda revocado al usarse")
+            @NotBlank(message = "refreshToken obligatorio") String refreshToken
+    ) {}
+
+    @Schema(description = "Cierre de sesión. El cuerpo es opcional.")
+    public record LogoutRequest(
+            @Schema(description = "Refresh token a revocar; de todos modos se revocan todos los del usuario")
+            String refreshToken
+    ) {}
 }

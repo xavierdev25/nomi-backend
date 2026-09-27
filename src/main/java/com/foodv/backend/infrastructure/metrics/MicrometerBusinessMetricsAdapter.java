@@ -3,6 +3,9 @@ package com.foodv.backend.infrastructure.metrics;
 import com.foodv.backend.domain.port.out.BusinessMetricsPort;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementación de {@code BusinessMetricsPort} sobre {@code BusinessMetricsService}.
+ */
 @Component
 public class MicrometerBusinessMetricsAdapter implements BusinessMetricsPort {
 

@@ -6,6 +6,9 @@ import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Borrado lógico de una tienda.
+ */
 @Service
 @RequiredArgsConstructor
 public class DeleteStoreHandler implements DeleteStoreUseCase {

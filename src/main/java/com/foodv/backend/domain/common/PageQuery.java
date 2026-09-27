@@ -1,5 +1,9 @@
 package com.foodv.backend.domain.common;
 
+/**
+ * Petición de página independiente de Spring Data. Normaliza valores fuera de rango: página
+ * negativa → 0, tamaño fuera de 1..200 → 20, orden vacío → {@code id}.
+ */
 public record PageQuery(int page, int size, String sortBy, boolean ascending) {
 
     public PageQuery {

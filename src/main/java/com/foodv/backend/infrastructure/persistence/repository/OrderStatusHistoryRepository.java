@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repositorio Spring Data del historial de estados.
+ */
 @Repository
 public interface OrderStatusHistoryRepository extends JpaRepository<OrderStatusHistoryEntity, Long> {
     List<OrderStatusHistoryEntity> findByOrderIdOrderByCreadoEnAsc(Long orderId);

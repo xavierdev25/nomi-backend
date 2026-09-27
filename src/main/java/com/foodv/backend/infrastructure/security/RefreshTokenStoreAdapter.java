@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code RefreshTokenStorePort}.
+ */
 @Component
 public class RefreshTokenStoreAdapter implements RefreshTokenStorePort {
 

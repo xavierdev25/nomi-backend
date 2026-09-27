@@ -7,23 +7,15 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
- * Servicio de dominio para la lógica de negocio de órdenes.
- * Encapsula reglas de negocio que no pertenecen a una entidad específica
- * pero son parte del dominio — sin dependencias de framework.
+ * Reglas de dominio de los pedidos que no pertenecen a una sola entidad.
  */
 @Component
 public class OrderDomainService {
 
     /**
-     * Valida y aplica una transición de estado a una orden.
-     * Implementa la máquina de estados:
-     * PENDIENTE → PREPARANDO → LISTO_PARA_RECOGER → EN_CAMINO → ENTREGADO
-     * PENDIENTE → CANCELADO
-     * PREPARANDO → CANCELADO
-     * LISTO_PARA_RECOGER → CANCELADO
-     * EN_CAMINO → CANCELADO
+     * Devuelve una copia del pedido con el nuevo estado.
      *
-     * @throws IllegalArgumentException si la transición no es válida
+     * @throws IllegalArgumentException si la transición no está permitida por {@link OrderStatus#canTransitionTo}
      */
     public Order applyStatusTransition(Order order, OrderStatus newStatus) {
         if (!order.getStatus().canTransitionTo(newStatus)) {
@@ -53,16 +45,10 @@ public class OrderDomainService {
                 .build();
     }
 
-    /**
-     * Verifica si una orden puede ser cancelada.
-     */
     public boolean isCancellable(Order order) {
         return order.getStatus().canTransitionTo(OrderStatus.CANCELADO);
     }
 
-    /**
-     * Verifica si una orden está en un estado terminal (no puede cambiar más).
-     */
     public boolean isTerminal(Order order) {
         return order.getStatus() == OrderStatus.ENTREGADO
                 || order.getStatus() == OrderStatus.CANCELADO;

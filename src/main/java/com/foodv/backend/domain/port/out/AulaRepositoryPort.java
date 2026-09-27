@@ -5,6 +5,9 @@ import com.foodv.backend.domain.model.aula.Aula;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de aulas.
+ */
 public interface AulaRepositoryPort {
 
     Aula save(Aula aula);

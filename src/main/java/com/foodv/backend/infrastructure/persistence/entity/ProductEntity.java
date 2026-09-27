@@ -3,10 +3,15 @@ package com.foodv.backend.infrastructure.persistence.entity;
 import com.foodv.backend.domain.model.product.ProductCategory;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code products}, con borrado lógico ({@code deleted_at}).
+ */
 @Entity
 @Table(name = "products")
 @Getter
@@ -46,6 +51,11 @@ public class ProductEntity {
 
     @Column(nullable = false)
     private boolean disponible;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "etiquetas_dieteticas", columnDefinition = "text[]", nullable = false)
+    @Builder.Default
+    private String[] etiquetasDieteticas = new String[0];
 
     @Column(name = "creado_en")
     private LocalDateTime creadoEn;

@@ -2,12 +2,11 @@ package com.foodv.backend.domain.port.in.payment;
 
 import com.foodv.backend.domain.model.payment.Payment;
 
+/**
+ * Creación del pago de un pedido. El monto se deriva del pedido en el servidor.
+ */
 public interface CreatePaymentUseCase {
 
-    /**
-     * Comando seguro: el orderId y el email del usuario autenticado son los únicos inputs.
-     * El monto, descripción y dueño se derivan en el servidor.
-     */
     record CreatePaymentCommand(Long orderId, String requesterEmail) {}
 
     Payment execute(CreatePaymentCommand command);

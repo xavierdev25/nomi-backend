@@ -30,6 +30,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Catálogo: lectura para usuarios autenticados; alta, edición y baja para el comercio dueño
+ * o un administrador.
+ */
 @Tag(name = "Productos")
 @RestController
 @RequestMapping("/products")

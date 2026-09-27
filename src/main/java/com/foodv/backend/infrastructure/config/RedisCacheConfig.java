@@ -10,6 +10,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import java.time.Duration;
 import java.util.Map;
 
+/**
+ * Caché en Redis con TTL de 5 minutos para los modelos de lectura ({@code products},
+ * {@code stores}).
+ */
 @Configuration
 public class RedisCacheConfig {
 

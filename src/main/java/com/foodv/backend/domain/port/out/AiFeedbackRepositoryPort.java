@@ -5,6 +5,9 @@ import com.foodv.backend.domain.model.ai.AiFeedback;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de valoraciones de recomendaciones.
+ */
 public interface AiFeedbackRepositoryPort {
 
     AiFeedback save(AiFeedback feedback);

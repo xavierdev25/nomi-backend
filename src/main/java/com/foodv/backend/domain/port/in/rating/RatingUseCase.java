@@ -5,6 +5,9 @@ import com.foodv.backend.domain.model.rating.StoreRatingSummary;
 
 import java.util.List;
 
+/**
+ * Calificación de pedidos y resumen por tienda.
+ */
 public interface RatingUseCase {
 
     Rating rateOrder(Long userId, Long orderId, Integer rating, String comentario);

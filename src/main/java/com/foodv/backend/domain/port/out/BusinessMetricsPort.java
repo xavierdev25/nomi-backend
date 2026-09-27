@@ -1,5 +1,8 @@
 package com.foodv.backend.domain.port.out;
 
+/**
+ * Contadores de negocio para monitoreo (Micrometer / Prometheus).
+ */
 public interface BusinessMetricsPort {
 
     void recordOrderCreated();

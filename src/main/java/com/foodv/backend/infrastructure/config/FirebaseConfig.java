@@ -11,6 +11,10 @@ import jakarta.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * Inicializa Firebase Admin para las notificaciones push. Con {@code firebase.enabled=false}
+ * (valor por defecto) no hace nada y las notificaciones push se omiten.
+ */
 @Slf4j
 @Configuration
 public class FirebaseConfig {

@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Crea la tienda de un comercio o administrador; un usuario solo puede tener una tienda.
+ */
 @Service
 @RequiredArgsConstructor
 public class CreateStoreHandler implements CreateStoreUseCase {

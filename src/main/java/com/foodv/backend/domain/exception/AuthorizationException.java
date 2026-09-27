@@ -1,7 +1,7 @@
 package com.foodv.backend.domain.exception;
 
 /**
- * Indicates that the authenticated user is not authorized to perform an operation.
+ * El usuario autenticado no tiene permiso sobre el recurso ({@code 403}).
  */
 public class AuthorizationException extends RuntimeException {
 

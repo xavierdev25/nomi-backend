@@ -5,6 +5,10 @@ import com.foodv.backend.domain.model.order.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Historial de cambios de estado de los pedidos. Hoy solo lo alimenta
+ * {@code UpdateOrderStatusHandler}.
+ */
 public interface OrderHistoryPort {
 
     record OrderHistoryEntry(

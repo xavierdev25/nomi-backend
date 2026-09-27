@@ -11,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Rotación de refresh token: cada uso revoca el token recibido y emite un par nuevo.
+ *
+ * <p>Si llega un token ya revocado se asume robo (alguien lo reutilizó) y se revocan todas las
+ * sesiones del usuario. Todos los fallos responden 400.
+ */
 @Service
 public class RefreshTokenHandler implements RefreshTokenUseCase {
 
@@ -37,7 +43,6 @@ public class RefreshTokenHandler implements RefreshTokenUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Refresh token inválido"));
 
         if (info.revoked()) {
-            // Token reuse: rotación detectada → revocar todos los tokens del usuario
             refreshTokenStorePort.revokeAllByUserId(info.userId());
             throw new IllegalArgumentException("Refresh token revocado");
         }

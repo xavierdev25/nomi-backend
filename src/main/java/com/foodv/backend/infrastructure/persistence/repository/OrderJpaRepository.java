@@ -13,6 +13,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de pedidos. Las consultas usan un entity graph sobre
+ * {@code items} para cargar las líneas sin N+1.
+ */
 @Repository
 public interface OrderJpaRepository extends JpaRepository<OrderEntity, Long> {
 
@@ -41,5 +45,6 @@ public interface OrderJpaRepository extends JpaRepository<OrderEntity, Long> {
     @EntityGraph(attributePaths = "items")
     Page<OrderEntity> findByStatus(OrderStatus status, Pageable pageable);
 
+    @EntityGraph(attributePaths = "items")
     List<OrderEntity> findByUserIdAndStatus(Long userId, OrderStatus status);
 }

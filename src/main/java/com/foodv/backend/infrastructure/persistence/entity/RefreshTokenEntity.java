@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code refresh_tokens}: tokens emitidos, su expiración y si fueron revocados.
+ */
 @Entity
 @Table(name = "refresh_tokens")
 @Getter

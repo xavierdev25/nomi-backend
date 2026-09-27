@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Recomendaciones de productos y valoración de recomendaciones.
+ */
 @Tag(name = "Inteligencia Artificial")
 @RestController
 @RequestMapping("/ai")

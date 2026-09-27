@@ -14,12 +14,11 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Verifica la firma HMAC SHA-256 de los webhooks de MercadoPago.
- * Reglas:
- *  - Secreto OBLIGATORIO en producción.
- *  - Comparación timing-safe (MessageDigest.isEqual).
- *  - Mensaje completo: "id:{dataId};request-id:{xRequestId};ts:{ts};".
- *  - Tolerancia de timestamp de ±5 minutos para mitigar replay.
+ * Verifica la firma HMAC-SHA256 de los webhooks de MercadoPago.
+ *
+ * <p>El mensaje firmado es {@code id:{dataId};request-id:{xRequestId};ts:{ts};}, la comparación
+ * es en tiempo constante y el timestamp se acepta con ±5 minutos para limitar la repetición.
+ * Sin secreto configurado rechaza todos los webhooks.
  */
 @Slf4j
 @Component
@@ -32,6 +31,11 @@ public class MercadoPagoSignatureVerifier {
         return webhookSecret != null && !webhookSecret.isBlank();
     }
 
+    /**
+     * @param xSignatureHeader cabecera {@code x-signature}: {@code ts=...,v1=...}
+     * @param dataId id del recurso notificado ({@code data.id})
+     * @return {@code true} solo si la firma es válida y el timestamp está en tolerancia
+     */
     public boolean verify(String xSignatureHeader, String xRequestId, String dataId) {
         if (!isConfigured()) {
             log.error("MercadoPago webhook secret no configurado. Rechazando webhook.");

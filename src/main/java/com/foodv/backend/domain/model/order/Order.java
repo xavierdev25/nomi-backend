@@ -8,6 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Pedido de un estudiante a una tienda, para entregar en un aula.
+ *
+ * <p>{@code total} es solo el subtotal de productos. Lo cobrado es
+ * {@code total + propina + tarifaServicio + comisionFoodv} (ver {@code CreatePaymentHandler}).
+ * {@code codigoConfirmacion} son 4 dígitos que el estudiante muestra al recibir el pedido.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

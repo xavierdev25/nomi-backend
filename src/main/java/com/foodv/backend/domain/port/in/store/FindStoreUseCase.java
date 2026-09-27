@@ -4,6 +4,9 @@ import com.foodv.backend.domain.model.store.Store;
 
 import java.util.List;
 
+/**
+ * Consulta de tiendas.
+ */
 public interface FindStoreUseCase {
 
     Store findById(Long id);

@@ -31,6 +31,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Perfil del usuario autenticado y gestión de usuarios por administradores.
+ */
 @Tag(name = "Usuarios")
 @RestController
 @RequestMapping("/users")
@@ -117,6 +120,10 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Devuelve los datos del token, no el registro completo (ver
+     * {@code AuthenticatedUserResolver.currentUserSummary}).
+     */
     @Operation(summary = "Mi perfil")
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMe() {

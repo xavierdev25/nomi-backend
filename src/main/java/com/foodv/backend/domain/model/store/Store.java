@@ -8,6 +8,10 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * Tienda del campus, gestionada por un usuario {@code COMERCIO} (una tienda por dueño).
+ * {@code activo} indica si está habilitada en la plataforma, no si está abierta ahora.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

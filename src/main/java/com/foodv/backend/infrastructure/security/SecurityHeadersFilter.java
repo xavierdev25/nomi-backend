@@ -10,6 +10,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Cabeceras de seguridad recomendadas por OWASP para una API sin estado: sin caché, sin
+ * framing, CSP restrictiva y HSTS.
+ */
 @Component
 @Order(Integer.MIN_VALUE)
 public class SecurityHeadersFilter extends OncePerRequestFilter {
@@ -18,7 +22,6 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // OWASP-recommended headers para una API stateless
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "DENY");
         response.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
@@ -32,7 +35,6 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
-        // X-XSS-Protection está deprecado y crea más problemas que soluciones; se omite a propósito.
         filterChain.doFilter(request, response);
     }
 }

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code PaymentRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentRepositoryAdapter implements PaymentRepositoryPort {

@@ -26,6 +26,9 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Webhook de MercadoPago: firma HMAC válida, firma inválida y notificación sin tema.
+ */
 @SpringBootTest(
         classes = {
                 PaymentController.class,

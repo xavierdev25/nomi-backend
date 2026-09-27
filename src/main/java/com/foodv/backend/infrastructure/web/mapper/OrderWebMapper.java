@@ -14,6 +14,9 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de pedidos.
+ */
 @Mapper(componentModel = "spring")
 public interface OrderWebMapper {
 

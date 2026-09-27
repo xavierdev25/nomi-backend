@@ -5,6 +5,10 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+/**
+ * Línea de un pedido. Nombre y precio se copian del producto al crear el pedido, para que un
+ * cambio posterior del catálogo no altere pedidos existentes.
+ */
 @Getter
 @Builder
 public class OrderItem {

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Consulta de aulas.
+ */
 @Service
 @RequiredArgsConstructor
 public class FindAulaHandler implements FindAulaUseCase {

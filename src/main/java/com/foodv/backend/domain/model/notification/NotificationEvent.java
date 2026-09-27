@@ -5,6 +5,10 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Evento que se publica por WebSocket o push al cambiar un pedido o un pago.
+ * {@code payload} lleva el objeto afectado completo.
+ */
 @Getter
 @Builder
 public class NotificationEvent {

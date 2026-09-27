@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Máquina de estados del pedido: transiciones permitidas, prohibidas y estados finales.
+ */
 @DisplayName("OrderDomainService - Máquina de estados")
 class OrderDomainServiceTest {
 

@@ -7,6 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Acceso al usuario autenticado de la petición en curso.
+ */
 @Component
 public class AuthenticatedUserResolver {
 
@@ -14,6 +17,13 @@ public class AuthenticatedUserResolver {
         return currentUserSummary();
     }
 
+    /**
+     * Usuario construido solo con los datos del token (id, email, rol, nombres). Apellidos,
+     * teléfono y preferencias no están: {@code GET /users/me} devuelve este resumen (ver la
+     * auditoría técnica, M6).
+     *
+     * @throws org.springframework.security.access.AccessDeniedException si no hay usuario autenticado
+     */
     public User currentUserSummary() {
         AuthenticatedUserPrincipal principal = currentPrincipal();
         return User.builder()

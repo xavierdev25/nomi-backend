@@ -26,6 +26,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/**
+ * Reglas del login: tokens en el caso feliz, error genérico ante credenciales inválidas o
+ * usuario inactivo, registro de intentos fallidos y bloqueo.
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("LoginHandler - Autenticación")
 class LoginHandlerTest {

@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code stores}, con borrado lógico ({@code deleted_at}).
+ */
 @Entity
 @Table(name = "stores")
 @Getter

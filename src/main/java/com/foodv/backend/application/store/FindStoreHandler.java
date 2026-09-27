@@ -5,11 +5,13 @@ import com.foodv.backend.domain.port.in.store.FindStoreUseCase;
 import com.foodv.backend.domain.port.out.StoreRepositoryPort;
 import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Consulta de tiendas.
+ */
 @Service
 @RequiredArgsConstructor
 public class FindStoreHandler implements FindStoreUseCase {
@@ -17,7 +19,6 @@ public class FindStoreHandler implements FindStoreUseCase {
     private final StoreRepositoryPort storeRepositoryPort;
 
     @Override
-    @Cacheable(value = "stores", key = "#id")
     public Store findById(Long id) {
         return storeRepositoryPort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tienda no encontrada"));

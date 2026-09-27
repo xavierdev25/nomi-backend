@@ -18,13 +18,17 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Subida de imágenes de productos y tiendas por su dueño (máximo 5 MB; jpg, png, webp o gif)
+ * y borrado por un administrador.
+ */
 @Tag(name = "Imágenes")
 @RestController
 @RequestMapping("/images")
 @RequiredArgsConstructor
 public class ImageController {
 
-    private static final long MAX_FILE_SIZE = 5L * 1024 * 1024; // 5 MB
+    private static final long MAX_FILE_SIZE = 5L * 1024 * 1024;
     private static final Set<String> ALLOWED_MIME = Set.of(
             "image/jpeg", "image/png", "image/webp", "image/gif"
     );

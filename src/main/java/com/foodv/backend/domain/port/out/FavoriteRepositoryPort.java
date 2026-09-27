@@ -6,6 +6,9 @@ import com.foodv.backend.domain.model.favorite.FavoriteStore;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de favoritos.
+ */
 public interface FavoriteRepositoryPort {
 
     FavoriteProduct saveProductFavorite(FavoriteProduct favorite);

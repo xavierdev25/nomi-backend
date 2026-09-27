@@ -11,7 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
+/**
+ * Actualización parcial de un producto; los campos {@code null} conservan su valor.
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateProductHandler implements UpdateProductUseCase {
@@ -40,6 +44,9 @@ public class UpdateProductHandler implements UpdateProductUseCase {
                 .stock(command.stock() != null ? command.stock() : existing.getStock())
                 .categoria(command.categoria() != null ? command.categoria() : existing.getCategoria())
                 .disponible(command.disponible() != null ? command.disponible() : existing.isDisponible())
+                .etiquetasDieteticas(command.etiquetasDieteticas() != null
+                        ? Set.copyOf(command.etiquetasDieteticas())
+                        : existing.getEtiquetasDieteticas())
                 .imagenUrl(existing.getImagenUrl())
                 .storeId(existing.getStoreId())
                 .activo(existing.isActivo())

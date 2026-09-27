@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Registra {@code CreatePaymentHandler} como bean, inyectando la URL de notificación de
+ * MercadoPago desde la configuración.
+ */
 @Configuration
 public class PaymentUseCaseConfig {
 

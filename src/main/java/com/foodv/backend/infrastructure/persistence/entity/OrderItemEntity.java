@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Tabla {@code order_items}.
+ */
 @Entity
 @Table(name = "order_items")
 @Getter

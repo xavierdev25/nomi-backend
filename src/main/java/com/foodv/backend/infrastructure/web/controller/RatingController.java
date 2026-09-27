@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Calificación de pedidos y resumen de calificaciones por tienda.
+ */
 @Tag(name = "Calificaciones")
 @RestController
 @RequestMapping("/ratings")

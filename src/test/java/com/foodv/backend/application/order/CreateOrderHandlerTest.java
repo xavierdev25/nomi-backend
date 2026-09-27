@@ -29,6 +29,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+/**
+ * Creación de pedidos: cálculo de importes y validaciones de usuario, tienda y stock.
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CreateOrderHandler - Creación de órdenes")
 class CreateOrderHandlerTest {

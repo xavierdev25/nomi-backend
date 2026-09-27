@@ -6,6 +6,9 @@ import com.foodv.backend.domain.model.user.UserRole;
 
 import java.util.List;
 
+/**
+ * Alta de usuarios por un administrador (cualquier rol).
+ */
 public interface CreateUserUseCase {
 
     User execute(CreateUserCommand command);

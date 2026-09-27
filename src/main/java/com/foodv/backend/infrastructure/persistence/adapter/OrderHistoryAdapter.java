@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementación JPA de {@code OrderHistoryPort}; el historial se lee en orden cronológico.
+ */
 @Component
 public class OrderHistoryAdapter implements OrderHistoryPort {
 

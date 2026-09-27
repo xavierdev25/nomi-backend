@@ -2,6 +2,9 @@ package com.foodv.backend.domain.port.in.store;
 
 import com.foodv.backend.domain.model.store.Store;
 
+/**
+ * Edición parcial de una tienda: los campos {@code null} no cambian.
+ */
 public interface UpdateStoreUseCase {
 
     record UpdateStoreCommand(String nombre, String descripcion, String telefono) {}

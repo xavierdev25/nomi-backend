@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Calificación de pedidos: solo el dueño, solo pedidos entregados y una vez por pedido.
+ */
 @Service
 @RequiredArgsConstructor
 public class RatingHandler implements RatingUseCase {

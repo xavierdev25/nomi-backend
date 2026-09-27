@@ -8,6 +8,9 @@ import com.foodv.backend.infrastructure.web.dto.product.ProductResponse;
 import com.foodv.backend.infrastructure.web.dto.product.UpdateProductRequest;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de productos.
+ */
 @Mapper(componentModel = "spring")
 public interface ProductWebMapper {
 
@@ -22,7 +25,8 @@ public interface ProductWebMapper {
                 request.precio(),
                 request.stock(),
                 request.categoria(),
-                storeId
+                storeId,
+                request.etiquetasDieteticas()
         );
     }
 }

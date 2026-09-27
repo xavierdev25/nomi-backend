@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
+/**
+ * Implementación de {@code SecureRandomPort} con {@link java.security.SecureRandom}.
+ */
 @Component
 public class SecureRandomAdapter implements SecureRandomPort {
 

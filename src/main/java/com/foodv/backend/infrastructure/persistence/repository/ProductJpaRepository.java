@@ -14,6 +14,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de productos.
+ *
+ * <p>{@code search} filtra por cada criterio solo si no es {@code null}; el nombre se busca por
+ * coincidencia parcial sin distinguir mayúsculas. {@code decrementStock} descuenta de forma
+ * atómica solo si hay stock suficiente (una cantidad negativa devuelve stock), y ambas
+ * operaciones de stock recalculan {@code disponible}.
+ */
 @Repository
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long> {
 
@@ -28,7 +36,6 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>
     Optional<ProductEntity> findByIdAndDeletedAtIsNull(Long id);
     Page<ProductEntity> findAllByDeletedAtIsNull(Pageable pageable);
     Page<ProductEntity> findByCategoriaAndDeletedAtIsNull(ProductCategory categoria, Pageable pageable);
-
 
     @Query("""
     SELECT p FROM ProductEntity p
@@ -51,11 +58,6 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>
             Pageable pageable
     );
 
-    /**
-     * Decrementa stock atómicamente si hay suficiente.
-     * Si cantidad es negativa, devuelve stock (útil al cancelar órdenes).
-     * @return número de filas actualizadas (1 si éxito, 0 si no se cumple la condición).
-     */
     @Modifying
     @Query("""
         UPDATE ProductEntity p

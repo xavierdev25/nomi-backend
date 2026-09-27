@@ -12,14 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+/**
+ * Auto-registro. Permite {@code ESTUDIANTE}, {@code REPARTIDOR} y {@code COMERCIO}, sin
+ * verificación adicional para estos dos últimos (ver la auditoría técnica, A5).
+ */
 @Service
 public class RegisterHandler implements RegisterUseCase {
 
-    /**
-     * Roles que pueden crearse desde el endpoint público /auth/register.
-     * ADMIN nunca se puede auto-asignar; debe crearse manualmente por otro ADMIN
-     * a través de /users (que requiere ROLE_ADMIN en SecurityConfig).
-     */
     private static final Set<UserRole> SELF_REGISTRABLE_ROLES = Set.of(
             UserRole.ESTUDIANTE,
             UserRole.REPARTIDOR,

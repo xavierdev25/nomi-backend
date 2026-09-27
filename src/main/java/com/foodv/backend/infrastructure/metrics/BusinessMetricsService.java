@@ -6,6 +6,11 @@ import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Contadores y temporizadores de negocio en Micrometer ({@code foodv.orders.*},
+ * {@code foodv.payments.*}, {@code foodv.users.registered}, {@code foodv.stores.created}),
+ * expuestos en {@code /actuator/prometheus}.
+ */
 @Slf4j
 @Service
 public class BusinessMetricsService {

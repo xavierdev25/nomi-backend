@@ -7,6 +7,9 @@ import com.foodv.backend.domain.model.store.Store;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Persistencia de tiendas. Las lecturas excluyen tiendas borradas lógicamente.
+ */
 public interface StoreRepositoryPort {
 
     Store save(Store store);

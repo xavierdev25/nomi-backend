@@ -9,6 +9,13 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/**
+ * Broker STOMP en {@code /ws} (con y sin SockJS). Los temas son {@code /topic/user/{id}},
+ * {@code /topic/store/{id}} y {@code /topic/order/{id}}.
+ *
+ * <p>{@code WebSocketAuthChannelInterceptor} autentica la conexión, pero las suscripciones no
+ * se autorizan por recurso (ver la auditoría técnica, A1).
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {

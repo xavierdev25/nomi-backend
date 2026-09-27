@@ -7,6 +7,9 @@ import com.foodv.backend.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Actualiza nombre, piso y pabellón; conserva código y estado.
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateAulaHandler implements UpdateAulaUseCase {

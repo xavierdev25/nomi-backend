@@ -15,8 +15,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Autentica las conexiones STOMP usando el JWT enviado en el header Authorization.
- * Cierra la opción de cualquier cliente anónimo de suscribirse a topics privados.
+ * Autentica las conexiones STOMP con el JWT de la cabecera {@code Authorization} del
+ * {@code CONNECT}.
+ *
+ * <p>Solo valida el {@code CONNECT}: las suscripciones ({@code SUBSCRIBE}) no se autorizan por
+ * recurso (ver la auditoría técnica, A1).
  */
 @Component
 public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {

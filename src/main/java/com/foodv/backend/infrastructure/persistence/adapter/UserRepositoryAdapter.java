@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code UserRepositoryPort}. Excluye usuarios borrados, normaliza el
+ * email en las búsquedas y aplica el borrado lógico.
+ */
 @Component
 public class UserRepositoryAdapter implements UserRepositoryPort {
 

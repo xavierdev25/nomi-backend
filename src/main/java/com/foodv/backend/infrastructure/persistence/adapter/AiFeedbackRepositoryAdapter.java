@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code AiFeedbackRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class AiFeedbackRepositoryAdapter implements AiFeedbackRepositoryPort {

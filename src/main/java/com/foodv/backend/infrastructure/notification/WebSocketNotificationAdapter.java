@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Publica eventos en los temas STOMP de usuario, tienda y pedido.
+ */
 @Component
 @RequiredArgsConstructor
 public class WebSocketNotificationAdapter implements NotificationPort {

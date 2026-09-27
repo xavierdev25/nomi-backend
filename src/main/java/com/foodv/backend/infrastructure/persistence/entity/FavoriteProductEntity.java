@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code favorite_products}; única por usuario y producto.
+ */
 @Entity
 @Table(
         name = "favorite_products",

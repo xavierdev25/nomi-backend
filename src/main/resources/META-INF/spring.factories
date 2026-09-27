@@ -1,1 +1,2 @@
+org.springframework.boot.EnvironmentPostProcessor=\
 com.foodv.backend.infrastructure.config.DotenvEnvironmentPostProcessor

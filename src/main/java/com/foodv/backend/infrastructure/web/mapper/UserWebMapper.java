@@ -8,6 +8,9 @@ import com.foodv.backend.infrastructure.web.dto.user.UpdateUserRequest;
 import com.foodv.backend.infrastructure.web.dto.user.UserResponse;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de usuarios.
+ */
 @Mapper(componentModel = "spring")
 public interface UserWebMapper {
 

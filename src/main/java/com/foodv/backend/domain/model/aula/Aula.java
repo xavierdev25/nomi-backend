@@ -4,6 +4,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * Salón del campus donde se entregan los pedidos. Solo las aulas activas se ofrecen al
+ * estudiante.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

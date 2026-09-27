@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+/**
+ * Lista negra de access tokens en Redis. Un token revocado se guarda hasta su expiración, y un
+ * cierre de sesiones global guarda por 30 días la marca de tiempo antes de la cual todos los
+ * tokens del usuario son inválidos.
+ */
 @Service
 public class TokenBlacklistService implements TokenBlacklistPort {
 

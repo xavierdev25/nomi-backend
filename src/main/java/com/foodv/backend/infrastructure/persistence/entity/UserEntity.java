@@ -21,6 +21,10 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code users}, con borrado lógico ({@code deleted_at}). Preferencias y restricciones
+ * son arrays de PostgreSQL.
+ */
 @Entity
 @Table(name = "users")
 @Getter

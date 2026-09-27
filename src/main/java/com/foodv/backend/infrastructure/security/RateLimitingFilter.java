@@ -18,10 +18,12 @@ import java.time.Duration;
 import java.util.HexFormat;
 
 /**
- * Rate limiting distribuido apoyado en Redis. Funciona correctamente con N réplicas.
- * - 100 req/min para endpoints generales.
- * - 30 req/min para auth (login/register/refresh).
- * - 5 req/min para IA.
+ * Límite de peticiones por minuto en Redis (válido con varias réplicas): 5 para IA, 30 para
+ * autenticación, 60 para pagos y 100 para el resto.
+ *
+ * <p>Limitaciones conocidas (auditoría técnica, M1): la clave es el hash de la cabecera
+ * {@code Authorization} aunque el token no sea válido, se confía en {@code X-Forwarded-For} y
+ * el límite de pagos no aplica porque la URI incluye el prefijo {@code /api}.
  */
 @Order(1)
 @Component

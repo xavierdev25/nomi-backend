@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Productos y tiendas favoritos del usuario autenticado.
+ */
 @Tag(name = "Favoritos")
 @RestController
 @RequestMapping("/favorites")

@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code StoreRepositoryPort}. Excluye tiendas borradas y aplica el
+ * borrado lógico.
+ */
 @Component
 @RequiredArgsConstructor
 public class StoreRepositoryAdapter implements StoreRepositoryPort {

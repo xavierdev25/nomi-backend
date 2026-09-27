@@ -7,6 +7,10 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Usuario de la plataforma. {@code password} es el hash bcrypt. Preferencias, restricciones,
+ * tipos de cocina y presupuesto alimentan las recomendaciones de la IA.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

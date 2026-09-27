@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Calificación (1 a 5) de un pedido entregado; una por pedido.
+ */
 @Getter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

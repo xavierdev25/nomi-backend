@@ -7,6 +7,10 @@ import com.foodv.backend.domain.port.out.TokenServicePort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Cierre de sesión: revoca el refresh token recibido y todos los del usuario, y pone el access
+ * token en la lista negra hasta que expire.
+ */
 @Service
 public class LogoutHandler implements LogoutUseCase {
 

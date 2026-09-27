@@ -6,6 +6,9 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Datos que se envían al servicio de IA: perfil del usuario, contexto y catálogo candidato.
+ */
 @Getter
 @Builder
 public class AiRecommendationRequest {

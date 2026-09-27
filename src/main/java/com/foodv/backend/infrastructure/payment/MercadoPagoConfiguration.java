@@ -6,6 +6,9 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configura el access token global del SDK de MercadoPago al arrancar.
+ */
 @Configuration
 @Getter
 public class MercadoPagoConfiguration {

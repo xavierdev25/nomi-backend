@@ -8,6 +8,9 @@ import com.foodv.backend.infrastructure.web.dto.aula.CreateAulaRequest;
 import com.foodv.backend.infrastructure.web.dto.aula.UpdateAulaRequest;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapeo MapStruct entre DTOs web y el dominio de aulas.
+ */
 @Mapper(componentModel = "spring")
 public interface AulaWebMapper {
 

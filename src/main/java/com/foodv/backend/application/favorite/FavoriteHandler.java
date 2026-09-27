@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Favoritos de productos y tiendas. Agregar un favorito que ya existe es idempotente.
+ */
 @Service
 @RequiredArgsConstructor
 public class FavoriteHandler implements FavoriteProductUseCase, FavoriteStoreUseCase {

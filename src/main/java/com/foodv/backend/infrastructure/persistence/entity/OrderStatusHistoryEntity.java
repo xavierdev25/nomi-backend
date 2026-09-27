@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla {@code order_status_history}.
+ */
 @Entity
 @Table(name = "order_status_history")
 @Getter

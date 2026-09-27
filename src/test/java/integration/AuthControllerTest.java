@@ -40,6 +40,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Endpoints de autenticación con la cadena de seguridad real y los casos de uso simulados.
+ */
 @SpringBootTest(
         classes = {
                 AuthController.class,
@@ -92,6 +95,17 @@ class AuthControllerTest {
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_unknown_restriction_returns_400() throws Exception {
+        Map<String, Object> body = new java.util.HashMap<>(validRegisterBody());
+        body.put("restrictions", List.of("VEGETARIANO", "SIN_MARISCOS"));
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest());
     }
 

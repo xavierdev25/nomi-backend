@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Pagos con MercadoPago y su webhook.
+ */
 @Slf4j
 @Tag(name = "Pagos")
 @RestController
@@ -132,6 +135,12 @@ public class PaymentController {
             @ApiResponse(responseCode = "401", description = "Firma inválida"),
             @ApiResponse(responseCode = "400", description = "Payload inválido")
     })
+    /**
+     * Webhook de MercadoPago. Público, pero solo se procesa si la firma {@code x-signature} es
+     * válida. Las notificaciones {@code merchant_order} se ignoran; las de pago se procesan con
+     * {@code ProcessWebhookUseCase}. Un error de procesamiento responde 500 para que MercadoPago
+     * reintente.
+     */
     @PostMapping("/webhook")
     public ResponseEntity<Void> webhook(
             @RequestBody String rawBody,

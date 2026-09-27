@@ -8,6 +8,9 @@ import com.foodv.backend.domain.model.product.ProductCategory;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Consulta y búsqueda del catálogo.
+ */
 public interface FindProductUseCase {
 
     Product findById(Long id);

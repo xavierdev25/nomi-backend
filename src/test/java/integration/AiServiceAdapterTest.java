@@ -4,9 +4,11 @@ import com.foodv.backend.domain.model.ai.AiRecommendationRequest;
 import com.foodv.backend.domain.model.ai.AiRecommendationResponse;
 import com.foodv.backend.domain.port.out.AiRecommendationPort;
 import com.foodv.backend.infrastructure.ai.AiServiceAdapter;
+import com.foodv.backend.infrastructure.config.AiResilienceConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.springboot3.circuitbreaker.autoconfigure.CircuitBreakerAutoConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -14,6 +16,8 @@ import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
@@ -22,9 +26,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
+/**
+ * Circuit breaker del cliente del servicio de IA: tras fallos consecutivos el circuito se abre
+ * y se usa la respuesta de degradación sin llamar al servicio. Los 4xx caen en la degradación
+ * pero no abren el circuito.
+ */
 @SpringBootTest(
         classes = {
                 AiServiceAdapterTest.TestBeans.class
@@ -53,6 +64,52 @@ class AiServiceAdapterTest {
 
     @jakarta.annotation.Resource
     private MockRestServiceServer server;
+
+    @BeforeEach
+    void resetCircuitAndServer() {
+        circuitBreakerRegistry.circuitBreaker("aiService").reset();
+        server.reset();
+    }
+
+    private static AiRecommendationRequest request() {
+        return AiRecommendationRequest.builder()
+                .userId(1L)
+                .restrictions(List.of())
+                .preferences(List.of("pollo"))
+                .availableProducts(List.of(new AiRecommendationRequest.ProductInfo(
+                        1L, "Menu", BigDecimal.TEN, "CRIOLLA")))
+                .maxRecommendations(3)
+                .build();
+    }
+
+    @Test
+    void clientErrorsUseFallbackButDoNotOpenTheCircuit() {
+        server.expect(ExpectedCount.times(2), requestTo("http://localhost:8001/api/ai/recommendations"))
+                .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY));
+        server.expect(requestTo("http://localhost:8001/api/ai/recommendations"))
+                .andRespond(withStatus(HttpStatus.TOO_MANY_REQUESTS));
+        server.expect(requestTo("http://localhost:8001/api/ai/recommendations"))
+                .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY));
+
+        for (int attempt = 0; attempt < 4; attempt++) {
+            assertEquals("FALLBACK", aiRecommendationPort.getRecommendations(request()).getGeneratedBy());
+        }
+
+        assertEquals(CircuitBreaker.State.CLOSED, circuitBreakerRegistry.circuitBreaker("aiService").getState());
+        server.verify();
+    }
+
+    @Test
+    void sendsTheStudentIdSoTheServiceCanRateLimitPerStudent() {
+        server.expect(requestTo("http://localhost:8001/api/ai/recommendations"))
+                .andExpect(header(AiServiceAdapter.USER_ID_HEADER, "1"))
+                .andExpect(header("X-API-Key", "test-secret"))
+                .andRespond(withServerError());
+
+        aiRecommendationPort.getRecommendations(request());
+
+        server.verify();
+    }
 
     @Test
     void circuitBreakerOpensAndUsesFallbackOnFourthAttempt() {
@@ -88,6 +145,7 @@ class AiServiceAdapterTest {
     }
 
     @Configuration
+    @Import(AiResilienceConfig.class)
     static class TestBeans {
 
         @Bean

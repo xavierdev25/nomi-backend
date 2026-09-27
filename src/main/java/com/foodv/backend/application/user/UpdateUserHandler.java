@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Actualiza nombre, apellidos y teléfono; el resto de campos no se puede cambiar por aquí.
+ */
 @Service
 public class UpdateUserHandler implements UpdateUserUseCase {
 

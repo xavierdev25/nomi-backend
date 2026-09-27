@@ -5,6 +5,9 @@ import com.foodv.backend.domain.model.product.Product;
 
 import java.util.List;
 
+/**
+ * Gestión de productos favoritos de un usuario.
+ */
 public interface FavoriteProductUseCase {
 
     FavoriteProduct addProductFavorite(Long userId, Long productId);

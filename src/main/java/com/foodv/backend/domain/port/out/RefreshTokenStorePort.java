@@ -3,6 +3,9 @@ package com.foodv.backend.domain.port.out;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Registro de refresh tokens emitidos, para poder revocarlos y detectar su reutilización.
+ */
 public interface RefreshTokenStorePort {
 
     record RefreshTokenInfo(

@@ -6,6 +6,10 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Recomendaciones devueltas por el servicio de IA. {@code generatedBy} indica el proveedor, o
+ * {@code FALLBACK} si el servicio no respondió.
+ */
 @Getter
 @Builder
 public class AiRecommendationResponse {

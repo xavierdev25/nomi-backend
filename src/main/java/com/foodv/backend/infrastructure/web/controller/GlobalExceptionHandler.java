@@ -21,6 +21,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Traduce las excepciones a respuestas JSON {@code {timestamp, status, error, message}} (más
+ * {@code fields} en errores de validación). Nunca expone trazas ni detalles internos.
+ *
+ * <p>{@code IllegalArgumentException} → 400, {@code IllegalStateException} → 409,
+ * {@code ResourceNotFoundException} → 404, {@code AuthorizationException} y
+ * {@code AccessDeniedException} → 403, y cualquier otra → 500 con mensaje genérico.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,6 +44,10 @@ public class GlobalExceptionHandler {
                 safeMessage(ex, "No tienes permisos para realizar esta acción"));
     }
 
+    /**
+     * Forma distinta al resto ({@code {"error": "Invalid credentials"}}); los clientes existentes
+     * dependen de ella.
+     */
     @ExceptionHandler(AuthenticationFailedException.class)
     public ResponseEntity<Map<String, String>> handleAuthenticationFailed(AuthenticationFailedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

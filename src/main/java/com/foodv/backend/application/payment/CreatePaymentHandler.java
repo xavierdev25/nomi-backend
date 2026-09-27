@@ -17,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Crea el pago de un pedido en MercadoPago.
+ *
+ * <p>El monto se calcula en el servidor ({@code total + propina + tarifa + comisión}); el
+ * cliente solo envía el id del pedido. Solo el dueño del pedido o un administrador pueden
+ * pagarlo, y un pedido admite un único pago: un segundo intento responde 400.
+ */
 public class CreatePaymentHandler implements CreatePaymentUseCase {
 
     private final PaymentRepositoryPort paymentRepositoryPort;

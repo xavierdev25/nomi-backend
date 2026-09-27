@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de calificaciones.
+ */
 @Repository
 public interface RatingJpaRepository extends JpaRepository<RatingEntity, Long> {
 

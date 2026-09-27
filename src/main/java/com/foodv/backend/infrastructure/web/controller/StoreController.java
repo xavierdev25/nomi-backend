@@ -27,6 +27,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Tiendas: lectura para usuarios autenticados; alta para comercios y edición o baja para el
+ * dueño o un administrador.
+ */
 @Tag(name = "Tiendas")
 @RestController
 @RequestMapping("/stores")

@@ -5,6 +5,10 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Valoración del usuario (me gusta / no me gusta) sobre un producto recomendado. Hay como
+ * máximo una por usuario y producto.
+ */
 @Getter
 @Builder
 public class AiFeedback {

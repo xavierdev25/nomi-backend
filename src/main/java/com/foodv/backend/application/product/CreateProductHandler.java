@@ -13,7 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
+/**
+ * Crea un producto en una tienda activa; queda disponible si tiene stock.
+ */
 @Service
 @RequiredArgsConstructor
 public class CreateProductHandler implements CreateProductUseCase {
@@ -48,6 +52,7 @@ public class CreateProductHandler implements CreateProductUseCase {
                 .storeId(command.storeId())
                 .activo(true)
                 .disponible(command.stock() > 0)
+                .etiquetasDieteticas(command.etiquetasDieteticas() == null ? Set.of() : Set.copyOf(command.etiquetasDieteticas()))
                 .creadoEn(LocalDateTime.now())
                 .build();
 

@@ -6,6 +6,9 @@ import com.foodv.backend.domain.model.user.User;
 
 import java.util.List;
 
+/**
+ * Consulta de usuarios.
+ */
 public interface FindUserUseCase {
 
     User findById(Long id);

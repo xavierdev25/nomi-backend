@@ -9,6 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
+/**
+ * CORS para clientes web, con los orígenes de {@code cors.allowed-origins}. Las apps móviles
+ * no dependen de CORS.
+ */
 @Configuration
 @ConfigurationProperties(prefix = "cors")
 @Getter

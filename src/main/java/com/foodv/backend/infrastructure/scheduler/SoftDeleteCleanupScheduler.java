@@ -11,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tarea diaria (4:00) que elimina definitivamente los usuarios borrados hace más de 7 días.
+ *
+ * <p>Las claves foráneas no tienen {@code ON DELETE}: con usuarios que tienen pedidos, pagos o
+ * tokens la transacción falla (ver la auditoría técnica, M5).
+ */
 @Component
 public class SoftDeleteCleanupScheduler {
 
@@ -29,7 +35,6 @@ public class SoftDeleteCleanupScheduler {
         this.storeJpaRepository = storeJpaRepository;
     }
 
-    // Corre todos los días a las 4:00 AM
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
     public void cleanupSoftDeleted() {

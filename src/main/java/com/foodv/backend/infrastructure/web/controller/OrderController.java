@@ -31,6 +31,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Pedidos: creación (estudiantes), consulta con control de acceso, avance de estado (tienda,
+ * repartidor o administrador) y cancelación.
+ */
 @Tag(name = "Órdenes")
 @RestController
 @RequestMapping("/orders")

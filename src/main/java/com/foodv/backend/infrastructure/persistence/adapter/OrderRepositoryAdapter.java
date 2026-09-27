@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code OrderRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderRepositoryAdapter implements OrderRepositoryPort {
@@ -25,9 +28,15 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(order)));
     }
 
+    /**
+     * Carga las líneas en la misma consulta. El {@code Order} de dominio siempre incluye sus
+     * líneas; con el {@code findById} de JPA la colección quedaba perezosa y, leída fuera de una
+     * transacción (por ejemplo en {@code OwnershipService}), lanzaba
+     * {@code LazyInitializationException}: cancelar y consultar el historial respondían 500.
+     */
     @Override
     public Optional<Order> findById(Long id) {
-        return jpaRepository.findById(id).map(mapper::toDomain);
+        return jpaRepository.findByIdWithItems(id).map(mapper::toDomain);
     }
 
     @Override

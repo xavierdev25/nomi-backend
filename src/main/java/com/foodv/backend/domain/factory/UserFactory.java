@@ -7,6 +7,10 @@ import com.foodv.backend.domain.model.user.UserRole;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Construcción de usuarios nuevos con valores por defecto consistentes: email normalizado,
+ * activo, presupuesto {@code MEDIO} y listas vacías en lugar de {@code null}.
+ */
 public final class UserFactory {
 
     private UserFactory() {
@@ -38,6 +42,9 @@ public final class UserFactory {
                 .build();
     }
 
+    /**
+     * Recorta y pasa a minúsculas. Todo acceso por email debe usar este formato.
+     */
     public static String normalizeEmail(String email) {
         return email == null ? "" : email.trim().toLowerCase();
     }

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Guarda o actualiza la valoración del usuario sobre un producto recomendado.
+ */
 @Service
 @RequiredArgsConstructor
 public class SubmitFeedbackHandler implements SubmitFeedbackUseCase {
@@ -17,7 +20,6 @@ public class SubmitFeedbackHandler implements SubmitFeedbackUseCase {
 
     @Override
     public AiFeedback execute(SubmitFeedbackCommand command) {
-        // Si ya existe feedback para este par usuario-producto, actualiza
         Optional<AiFeedback> existing = feedbackRepositoryPort
                 .findByUserIdAndProductId(command.userId(), command.productId());
 

@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Consulta de usuarios.
+ */
 @Service
 @Transactional(readOnly = true)
 public class FindUserHandler implements FindUserUseCase {

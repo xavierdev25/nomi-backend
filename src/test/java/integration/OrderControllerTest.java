@@ -55,6 +55,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Endpoints de pedidos con la cadena de seguridad real: roles, ownership y respuestas
+ * {@code 401}/{@code 403}.
+ */
 @SpringBootTest(
         classes = {
                 OrderController.class,
@@ -131,6 +135,23 @@ class OrderControllerTest {
         mockMvc.perform(get("/orders/10")
                         .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 2L, "other@foodv.com")))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void find_order_without_token_returns_401() throws Exception {
+        mockMvc.perform(get("/orders/10"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    /**
+     * Mismo camino que un token expirado: el filtro JWT lo descarta y la petición sigue como
+     * anónima. Los clientes renuevan la sesión ante {@code 401}, no ante {@code 403}.
+     */
+    @Test
+    void find_order_with_invalid_token_returns_401() throws Exception {
+        mockMvc.perform(get("/orders/10")
+                        .header("Authorization", "Bearer token.invalido.firma"))
+                .andExpect(status().isUnauthorized());
     }
 
     private String token(UserRole role, Long userId, String email) {

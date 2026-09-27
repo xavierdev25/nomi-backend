@@ -8,6 +8,10 @@ import org.springframework.web.client.RestClient;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
+/**
+ * Cliente HTTP para servicios internos: 3 s para conectar y 10 s de lectura, para que un
+ * servicio lento no bloquee los hilos de la API.
+ */
 @Configuration
 public class RestClientConfig {
 

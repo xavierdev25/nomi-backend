@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data de productos favoritos.
+ */
 @Repository
 public interface FavoriteProductJpaRepository extends JpaRepository<FavoriteProductEntity, Long> {
 

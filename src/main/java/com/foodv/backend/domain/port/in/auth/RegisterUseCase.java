@@ -6,6 +6,9 @@ import com.foodv.backend.domain.model.user.UserRole;
 
 import java.util.List;
 
+/**
+ * Auto-registro público de usuarios.
+ */
 public interface RegisterUseCase {
 
     User execute(RegisterCommand command);

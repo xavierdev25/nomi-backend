@@ -16,6 +16,13 @@ import com.foodv.backend.domain.port.out.notification.PushNotificationPort;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Aplica una notificación de MercadoPago: actualiza el pago y, según su estado, pasa el pedido
+ * a {@code PREPARANDO} (aprobado) o lo cancela devolviendo el stock (rechazado).
+ *
+ * <p>El pago se busca por id externo y, si no aparece, por la referencia externa (id del
+ * pedido) consultada a MercadoPago.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -112,6 +119,8 @@ public class ProcessWebhookHandler implements ProcessWebhookUseCase {
             });
         }
 
+        // Ojo (auditoría técnica, C1): este bloque no depende del estado del pago y cancela cualquier
+        // pedido que siga en PENDIENTE, también con pagos pendientes o en revisión.
         Optional<Order> optionalOrderRejected = orderRepositoryPort.findById(existing.getOrderId());
         optionalOrderRejected.ifPresent(order -> {
             if (order.getStatus() == OrderStatus.PENDIENTE) {
@@ -175,7 +184,6 @@ public class ProcessWebhookHandler implements ProcessWebhookUseCase {
                 }
             });
 
-            // Notificaciones
             NotificationEvent notificationEvent = NotificationEvent.builder()
                     .type("PAYMENT_REJECTED")
                     .orderId(existing.getOrderId())

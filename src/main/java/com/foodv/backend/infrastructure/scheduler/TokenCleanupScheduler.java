@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tarea diaria (3:00) que elimina refresh tokens expirados y los revocados hace más de un día.
+ */
 @Component
 public class TokenCleanupScheduler {
 
@@ -18,7 +21,6 @@ public class TokenCleanupScheduler {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    // Corre todos los días a las 3:00 AM
     @Scheduled(cron = "0 0 3 * * *")
     public void cleanupExpiredTokens() {
         LocalDateTime now = LocalDateTime.now();

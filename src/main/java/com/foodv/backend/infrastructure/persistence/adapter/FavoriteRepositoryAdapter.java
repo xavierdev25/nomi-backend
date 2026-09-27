@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementación JPA de {@code FavoriteRepositoryPort}.
+ */
 @Component
 @RequiredArgsConstructor
 public class FavoriteRepositoryAdapter implements FavoriteRepositoryPort {

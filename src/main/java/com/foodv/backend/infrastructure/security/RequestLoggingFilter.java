@@ -12,6 +12,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Registra método, ruta, estado y duración de cada petición, y le asigna un id corto
+ * ({@code X-Request-Id}, también en el MDC de los logs).
+ */
 @Component
 @Order(0)
 public class RequestLoggingFilter extends OncePerRequestFilter {

@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * Subida y borrado de imágenes en Cloudinary. La subida se reintenta hasta dos veces con
+ * espera creciente antes de fallar.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
