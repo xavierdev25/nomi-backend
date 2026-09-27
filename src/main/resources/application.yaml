@@ -150,7 +150,7 @@ info:
     version: 1.0.0
     description: Sistema de delivery universitario Nomi
     java-version: "21"
-    spring-boot-version: "4.0.6"
+    spring-boot-version: "4.0.8"
 
 # ── Firebase FCM ───────────────────────────
 firebase:

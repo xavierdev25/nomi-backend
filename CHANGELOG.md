@@ -36,6 +36,12 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
   registra como error con el código y el inicio del cuerpo.
 
 ### Corregido
+- **Seguridad de dependencias** (el paso *Security scan* de la CI fallaba con 7 CVE CRITICAL y 37
+  HIGH; Trivy da ahora 0): Spring Boot 4.0.6 → 4.0.8, Tomcat 11.0.26, HttpClient 5.6.4 /
+  HttpCore 5.4.3, `firebase-admin` 9.4.2 → 9.11.0 (gRPC 1.83), y exclusión de las dependencias
+  de build que el SDK de MercadoPago declaraba en tiempo de ejecución (plugin de Javadoc,
+  Maven, Velocity, `commons-compress`).
+- `aquasecurity/trivy-action` fijado a un commit (v0.36.0) en lugar de `@master`.
 - Se recomendaban platos que violaban las restricciones del estudiante (por ejemplo Ají de
   Gallina a un vegetariano).
 - Se enviaban a la IA productos agotados y de tiendas inactivas, y todo el catálogo (más de 200

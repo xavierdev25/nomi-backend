@@ -11,7 +11,7 @@ pedidos y stock, pagos con MercadoPago y el puente hacia el servicio de recomend
 | | |
 |---|---|
 | Lenguaje | Java 21 |
-| Framework | Spring Boot 4.0.6 (Web MVC, Security 7, Data JPA, Validation, WebSocket, Actuator) |
+| Framework | Spring Boot 4.0.8 (Web MVC, Security 7, Data JPA, Validation, WebSocket, Actuator) |
 | Arquitectura | Hexagonal (puertos y adaptadores) |
 | Base de datos | PostgreSQL 16, migraciones con Flyway (V1–V22) |
 | Caché y límites | Redis 7 (caché, rate limiting, blacklist de tokens, intentos de login) |

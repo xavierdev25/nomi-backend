@@ -149,7 +149,8 @@ jobs:
         run: docker load < nomi-backend.tar.gz
 
       - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@master
+        # Fijado a un commit (v0.36.0): una rama o una etiqueta móvil puede cambiar sin aviso.
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: nomi-backend:latest
           format: table
