@@ -1,20 +1,20 @@
 package integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foodv.backend.domain.exception.AuthenticationFailedException;
-import com.foodv.backend.domain.model.user.UserRole;
-import com.foodv.backend.domain.port.in.auth.LoginUseCase;
-import com.foodv.backend.domain.port.in.auth.LogoutUseCase;
-import com.foodv.backend.domain.port.in.auth.RefreshTokenUseCase;
-import com.foodv.backend.domain.port.in.auth.RegisterUseCase;
-import com.foodv.backend.domain.port.out.TokenBlacklistPort;
-import com.foodv.backend.domain.port.out.TokenServicePort;
-import com.foodv.backend.infrastructure.config.JwtConfig;
-import com.foodv.backend.infrastructure.config.SecurityConfig;
-import com.foodv.backend.infrastructure.security.JwtAuthenticationFilter;
-import com.foodv.backend.infrastructure.security.JwtTokenServiceAdapter;
-import com.foodv.backend.infrastructure.web.controller.AuthController;
-import com.foodv.backend.infrastructure.web.controller.GlobalExceptionHandler;
+import com.nomi.backend.domain.exception.AuthenticationFailedException;
+import com.nomi.backend.domain.model.user.UserRole;
+import com.nomi.backend.domain.port.in.auth.LoginUseCase;
+import com.nomi.backend.domain.port.in.auth.LogoutUseCase;
+import com.nomi.backend.domain.port.in.auth.RefreshTokenUseCase;
+import com.nomi.backend.domain.port.in.auth.RegisterUseCase;
+import com.nomi.backend.domain.port.out.TokenBlacklistPort;
+import com.nomi.backend.domain.port.out.TokenServicePort;
+import com.nomi.backend.infrastructure.config.JwtConfig;
+import com.nomi.backend.infrastructure.config.SecurityConfig;
+import com.nomi.backend.infrastructure.security.JwtAuthenticationFilter;
+import com.nomi.backend.infrastructure.security.JwtTokenServiceAdapter;
+import com.nomi.backend.infrastructure.web.controller.AuthController;
+import com.nomi.backend.infrastructure.web.controller.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -56,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 "jwt.secret=test_jwt_secret_placeholder_minimum_32_bytes_long_value",
                 "jwt.expiration=86400000",
                 "jwt.refresh-expiration=604800000",
-                "jwt.issuer=foodv-backend-test"
+                "jwt.issuer=nomi-backend-test"
         }
 )
 @ImportAutoConfiguration({
@@ -118,7 +118,7 @@ class AuthControllerTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
-                                "email", "xavier@foodv.com",
+                                "email", "xavier@nomi.com",
                                 "password", "Password123"
                         ))))
                 .andExpect(status().isOk());
@@ -132,7 +132,7 @@ class AuthControllerTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
-                                "email", "xavier@foodv.com",
+                                "email", "xavier@nomi.com",
                                 "password", "Wrong123"
                         ))))
                 .andExpect(status().isUnauthorized());
@@ -140,7 +140,7 @@ class AuthControllerTest {
 
     @Test
     void logout_valid_jwt_returns_200() throws Exception {
-        String token = tokenServicePort.generateAccessToken(1L, "xavier@foodv.com", UserRole.ESTUDIANTE);
+        String token = tokenServicePort.generateAccessToken(1L, "xavier@nomi.com", UserRole.ESTUDIANTE);
 
         mockMvc.perform(post("/auth/logout")
                         .header("Authorization", "Bearer " + token)
@@ -153,7 +153,7 @@ class AuthControllerTest {
         return Map.of(
                 "nombres", "Xavier",
                 "apellidos", "David",
-                "email", "xavier@foodv.com",
+                "email", "xavier@nomi.com",
                 "password", "Password123",
                 "telefono", "999999999",
                 "role", "ESTUDIANTE",
@@ -178,7 +178,7 @@ class AuthControllerTest {
             jwtConfig.setSecret("test_jwt_secret_placeholder_minimum_32_bytes_long_value");
             jwtConfig.setExpiration(86_400_000L);
             jwtConfig.setRefreshExpiration(604_800_000L);
-            jwtConfig.setIssuer("foodv-backend-test");
+            jwtConfig.setIssuer("nomi-backend-test");
             return jwtConfig;
         }
     }

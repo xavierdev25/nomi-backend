@@ -12,7 +12,7 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
   (`RecommendationCandidates`: se pueden pedir, tienda activa, aptos para las restricciones del
   estudiante, sin "no me gusta", los más pedidos primero, como mucho 40) y el servicio de IA solo
   los ordena y explica. Sin candidatos, `generatedBy = "SIN_CANDIDATOS"` sin llamar a la IA.
-- Cabecera `X-FoodV-User-Id` hacia el servicio de IA, para su límite de peticiones por estudiante.
+- Cabecera `X-Nomi-User-Id` hacia el servicio de IA, para su límite de peticiones por estudiante.
 - Documentación OpenAPI completa: descripción general, tags, `@Schema` en todos los DTOs y
   respuestas de error comunes (`400`, `401`, `403`, `429`, `500`) con el esquema `ApiError`.
 - Javadoc en español de todo el código de producción.
@@ -21,6 +21,13 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
   recomendaciones, circuit breaker con `4xx` y registro con restricción no válida (68 en total).
 
 ### Cambiado
+- **La marca es Nomi en todo el sistema.** Paquete Java `com.nomi.backend` y `groupId`
+  `com.nomi`; nombre de la aplicación y emisor JWT por defecto `nomi-backend`; base de datos y
+  usuario por defecto `nomi_db` / `nomi_user`; contenedores `nomi-postgres`, `nomi-redis` y
+  `nomi-ai-service`; métricas `nomi.*`; carpetas de Cloudinary `nomi/…`.
+- **Cambio de contrato:** la comisión de la plataforma se llama `comisionNomi` en la API y
+  `comision_nomi` en la base (migración V23). Los clientes deben usar el nombre nuevo.
+- Cabecera hacia el servicio de IA: `X-Nomi-User-Id`.
 - El registro (y el alta por admin) solo admite restricciones `VEGETARIANO`, `VEGANO`,
   `SIN_GLUTEN`, `SIN_LACTOSA` o `NINGUNA`.
 - El presupuesto se envía a la IA como `presupuesto medio` (sin `:`, que el servicio rechazaba) y

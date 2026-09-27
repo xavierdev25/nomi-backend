@@ -1,6 +1,6 @@
 # SECURITY.md — `nomi-backend`
 
-El backend es la frontera de confianza de FoodV: todo lo que llega de un cliente se valida aquí.
+El backend es la frontera de confianza de Nomi: todo lo que llega de un cliente se valida aquí.
 
 ## 1. Autenticación
 

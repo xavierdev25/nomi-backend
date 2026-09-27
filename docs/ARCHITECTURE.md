@@ -70,7 +70,7 @@ valida la transición con `OrderStatus.canTransitionTo`, se guarda el historial 
    primero los más pedidos, como mucho 40. Una restricción guardada que no se reconoce, o
    ningún candidato, responde `SIN_CANDIDATOS` sin llamar a la IA.
 2. **Ranking y explicación, en el servicio de IA**: se envían los candidatos con las
-   preferencias (franja horaria primero), `X-API-Key` y `X-FoodV-User-Id`, con timeouts de 3 s
+   preferencias (franja horaria primero), `X-API-Key` y `X-Nomi-User-Id`, con timeouts de 3 s
    (conexión) y 10 s (lectura) y un circuit breaker de Resilience4j (`aiService`). Cualquier
    fallo devuelve `FALLBACK`; los `4xx` no abren el circuito (`AiResilienceConfig`).
 
@@ -84,7 +84,7 @@ la tabla `refresh_tokens`, rotación en cada uso y revocación masiva si se reut
 | Configuración | `application.yaml` + perfiles `dev`/`prod`/`test`; `.env` cargado por `DotenvEnvironmentPostProcessor` (registrado en `META-INF/spring.factories`) |
 | Caché | Redis, TTL 5 min; caché `products` invalidada al crear/editar/borrar |
 | Tareas programadas | `TokenCleanupScheduler` (3:00) y `SoftDeleteCleanupScheduler` (4:00) |
-| Métricas | `BusinessMetricsService` (`foodv.orders.*`, `foodv.payments.*`, `foodv.users.registered`, `foodv.stores.created`) |
+| Métricas | `BusinessMetricsService` (`nomi.orders.*`, `nomi.payments.*`, `nomi.users.registered`, `nomi.stores.created`) |
 | Tiempo real | STOMP sobre `/ws`, prefijos `/topic` y `/app`; `WebSocketAuthChannelInterceptor` autentica el `CONNECT` |
 | Push | `FcmNotificationAdapter`, activo solo con `FIREBASE_ENABLED=true` |
 | OpenAPI | `OpenApiConfig`: descripción, tags, esquema JWT y respuestas de error comunes con `ApiError` |

@@ -1,5 +1,5 @@
 # =============================================
-# FoodV Backend — Perfil PROD
+# Nomi Backend — Perfil PROD
 # =============================================
 spring:
   flyway:
@@ -18,7 +18,7 @@ springdoc:
 
 logging:
   level:
-    com.foodv.backend: INFO
+    com.nomi.backend: INFO
     org.hibernate.SQL: WARN
     org.hibernate.type.descriptor.sql.BasicBinder: WARN
     org.springframework.security: WARN

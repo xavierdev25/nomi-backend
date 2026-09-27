@@ -1,5 +1,5 @@
 # =============================================
-# FoodV Backend — Perfil DEV
+# Nomi Backend — Perfil DEV
 # =============================================
 spring:
   jpa:
@@ -17,7 +17,7 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
-  issuer: ${JWT_ISSUER:foodv-backend}
+  issuer: ${JWT_ISSUER:nomi-backend}
 
 # ── Cloudinary ───────────────────────────────
 cloudinary:
@@ -34,7 +34,7 @@ mercadopago:
 
 logging:
   level:
-    com.foodv.backend: DEBUG
+    com.nomi.backend: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.security: DEBUG

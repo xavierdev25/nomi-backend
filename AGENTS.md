@@ -4,7 +4,7 @@ Instrucciones para agentes de IA (y personas) que trabajen en este repositorio.
 
 ## Qué es
 
-API REST en Spring Boot 4 / Java 21 con arquitectura hexagonal. Es la autoridad de FoodV sobre
+API REST en Spring Boot 4 / Java 21 con arquitectura hexagonal. Es la autoridad de Nomi sobre
 usuarios, sesiones, pedidos, stock, dinero y permisos. La consumen la app iOS (`nomi-ios`) y, en
 sentido inverso, llama al servicio de IA (`nomi-ai-service`) y a MercadoPago.
 

@@ -1,10 +1,10 @@
 package integration;
 
-import com.foodv.backend.domain.model.ai.AiRecommendationRequest;
-import com.foodv.backend.domain.model.ai.AiRecommendationResponse;
-import com.foodv.backend.domain.port.out.AiRecommendationPort;
-import com.foodv.backend.infrastructure.ai.AiServiceAdapter;
-import com.foodv.backend.infrastructure.config.AiResilienceConfig;
+import com.nomi.backend.domain.model.ai.AiRecommendationRequest;
+import com.nomi.backend.domain.model.ai.AiRecommendationResponse;
+import com.nomi.backend.domain.port.out.AiRecommendationPort;
+import com.nomi.backend.infrastructure.ai.AiServiceAdapter;
+import com.nomi.backend.infrastructure.config.AiResilienceConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.springboot3.circuitbreaker.autoconfigure.CircuitBreakerAutoConfiguration;

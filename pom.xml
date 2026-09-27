@@ -8,7 +8,7 @@
 		<version>4.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.foodv</groupId>
+	<groupId>com.nomi</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
@@ -312,9 +312,9 @@
 								<rule>
 									<element>BUNDLE</element>
 									<includes>
-										<include>com/foodv/backend/domain/service/*</include>
-										<include>com/foodv/backend/application/auth/*</include>
-										<include>com/foodv/backend/application/order/CreateOrderHandler</include>
+										<include>com/nomi/backend/domain/service/*</include>
+										<include>com/nomi/backend/application/auth/*</include>
+										<include>com/nomi/backend/application/order/CreateOrderHandler</include>
 									</includes>
 									<limits>
 										<limit>

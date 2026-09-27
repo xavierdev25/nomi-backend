@@ -1,16 +1,16 @@
 # =============================================
-# FoodV Backend — Spring Boot Configuration
+# Nomi Backend — Spring Boot Configuration
 # =============================================
 spring:
   application:
-    name: foodv-backend
+    name: nomi-backend
   profiles:
       active: ${SPRING_PROFILES_ACTIVE:dev}
 
   # ── PostgreSQL DataSource ──────────────────
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:foodv_db}
-    username: ${DB_USERNAME:foodv_user}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nomi_db}
+    username: ${DB_USERNAME:nomi_user}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -73,7 +73,7 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}        # 24 hours (ms)
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days (ms)
-  issuer: ${JWT_ISSUER:foodv-backend}
+  issuer: ${JWT_ISSUER:nomi-backend}
 
 # ── Cloudinary ─────────────────────────────
 cloudinary:
@@ -99,7 +99,7 @@ websocket:
 logging:
   level:
     root: INFO
-    com.foodv.backend: ${LOG_LEVEL:DEBUG}
+    com.nomi.backend: ${LOG_LEVEL:DEBUG}
     org.springframework.security: INFO
     org.hibernate.SQL: ${HIBERNATE_LOG_LEVEL:WARN}
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_LOG_LEVEL:WARN}
@@ -146,9 +146,9 @@ management:
 # ── Info ───────────────────────────────────
 info:
   app:
-    name: FoodV Backend
+    name: Nomi Backend
     version: 1.0.0
-    description: Sistema de delivery universitario FoodV
+    description: Sistema de delivery universitario Nomi
     java-version: "21"
     spring-boot-version: "4.0.6"
 

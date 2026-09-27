@@ -1,6 +1,6 @@
-# FoodV — Backend (`nomi-backend`)
+# Nomi — Backend (`nomi-backend`)
 
-API REST de **FoodV**, la plataforma de pedidos de comida dentro del campus (Universidad César
+API REST de **Nomi**, la plataforma de pedidos de comida dentro del campus (Universidad César
 Vallejo, sede Lima Norte): los estudiantes piden a las tiendas de la universidad y reciben el
 pedido en su aula. Este servicio es la autoridad del sistema: usuarios y sesiones, catálogo,
 pedidos y stock, pagos con MercadoPago y el puente hacia el servicio de recomendaciones
@@ -38,8 +38,9 @@ docker compose up -d postgres redis
 
 - El `.env` de la raíz se carga solo al arrancar (`DotenvEnvironmentPostProcessor`). Las variables
   de entorno reales tienen prioridad sobre él.
-- Levanta solo `postgres` y `redis`: el servicio `ai-service` del compose apunta a una carpeta que
-  no existe (`../foodv-ai-service`); el servicio de IA se ejecuta desde su propio repositorio.
+- `docker compose up -d postgres redis` levanta solo las dependencias; úsalo si ejecutas el
+  servicio de IA desde su repositorio (`uvicorn`, puerto 8001). `docker compose up -d` además
+  construye y arranca `ai-service` desde `../nomi-ai-service` (el repositorio vecino).
 - Con el perfil `dev`, Spring Boot también intenta levantar `docker-compose.yml` si no encuentra
   servicios corriendo; por eso conviene levantarlos antes a mano.
 - PostgreSQL se publica en el puerto `DB_PORT` del `.env` y Redis en el `6380` del host.
@@ -59,13 +60,13 @@ docker compose up -d postgres redis
 ```
 
 68 tests: unitarios, de controlador con MockMvc y de integración. Los de integración (perfil
-`test`) necesitan PostgreSQL en `localhost:5432` (base `foodv_db`, usuario `foodv_user`) y Redis
+`test`) necesitan PostgreSQL en `localhost:5432` (base `nomi_db`, usuario `nomi_user`) y Redis
 en `6380`. Detalle en [docs/TESTING.md](docs/TESTING.md).
 
 ## Estructura
 
 ```text
-src/main/java/com/foodv/backend/
+src/main/java/com/nomi/backend/
 ├── domain/            Núcleo sin Spring: modelos, puertos (in/out), servicios de dominio, excepciones
 ├── application/       Casos de uso: un handler por operación, agrupados por módulo
 └── infrastructure/    Adaptadores

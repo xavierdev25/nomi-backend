@@ -1,2 +1,2 @@
 org.springframework.boot.EnvironmentPostProcessor=\
-com.foodv.backend.infrastructure.config.DotenvEnvironmentPostProcessor
+com.nomi.backend.infrastructure.config.DotenvEnvironmentPostProcessor

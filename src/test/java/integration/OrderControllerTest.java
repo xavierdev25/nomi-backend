@@ -1,31 +1,31 @@
 package integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foodv.backend.domain.common.PagedResult;
-import com.foodv.backend.domain.model.order.Order;
-import com.foodv.backend.domain.model.order.OrderItem;
-import com.foodv.backend.domain.model.order.OrderStatus;
-import com.foodv.backend.domain.model.user.UserRole;
-import com.foodv.backend.domain.port.in.order.CancelOrderUseCase;
-import com.foodv.backend.domain.port.in.order.CreateOrderUseCase;
-import com.foodv.backend.domain.port.in.order.FindOrderUseCase;
-import com.foodv.backend.domain.port.in.order.UpdateOrderStatusUseCase;
-import com.foodv.backend.domain.port.out.OrderHistoryPort;
-import com.foodv.backend.domain.port.out.TokenBlacklistPort;
-import com.foodv.backend.domain.port.out.TokenServicePort;
-import com.foodv.backend.domain.port.out.UserRepositoryPort;
-import com.foodv.backend.infrastructure.config.JwtConfig;
-import com.foodv.backend.infrastructure.config.SecurityConfig;
-import com.foodv.backend.infrastructure.security.AuthenticatedUserResolver;
-import com.foodv.backend.infrastructure.security.JwtAuthenticationFilter;
-import com.foodv.backend.infrastructure.security.JwtTokenServiceAdapter;
-import com.foodv.backend.infrastructure.security.OwnershipService;
-import com.foodv.backend.infrastructure.web.controller.GlobalExceptionHandler;
-import com.foodv.backend.infrastructure.web.controller.OrderController;
-import com.foodv.backend.infrastructure.web.dto.common.PageResponse;
-import com.foodv.backend.infrastructure.web.dto.order.OrderItemResponse;
-import com.foodv.backend.infrastructure.web.dto.order.OrderResponse;
-import com.foodv.backend.infrastructure.web.mapper.OrderWebMapper;
+import com.nomi.backend.domain.common.PagedResult;
+import com.nomi.backend.domain.model.order.Order;
+import com.nomi.backend.domain.model.order.OrderItem;
+import com.nomi.backend.domain.model.order.OrderStatus;
+import com.nomi.backend.domain.model.user.UserRole;
+import com.nomi.backend.domain.port.in.order.CancelOrderUseCase;
+import com.nomi.backend.domain.port.in.order.CreateOrderUseCase;
+import com.nomi.backend.domain.port.in.order.FindOrderUseCase;
+import com.nomi.backend.domain.port.in.order.UpdateOrderStatusUseCase;
+import com.nomi.backend.domain.port.out.OrderHistoryPort;
+import com.nomi.backend.domain.port.out.TokenBlacklistPort;
+import com.nomi.backend.domain.port.out.TokenServicePort;
+import com.nomi.backend.domain.port.out.UserRepositoryPort;
+import com.nomi.backend.infrastructure.config.JwtConfig;
+import com.nomi.backend.infrastructure.config.SecurityConfig;
+import com.nomi.backend.infrastructure.security.AuthenticatedUserResolver;
+import com.nomi.backend.infrastructure.security.JwtAuthenticationFilter;
+import com.nomi.backend.infrastructure.security.JwtTokenServiceAdapter;
+import com.nomi.backend.infrastructure.security.OwnershipService;
+import com.nomi.backend.infrastructure.web.controller.GlobalExceptionHandler;
+import com.nomi.backend.infrastructure.web.controller.OrderController;
+import com.nomi.backend.infrastructure.web.dto.common.PageResponse;
+import com.nomi.backend.infrastructure.web.dto.order.OrderItemResponse;
+import com.nomi.backend.infrastructure.web.dto.order.OrderResponse;
+import com.nomi.backend.infrastructure.web.mapper.OrderWebMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -73,7 +73,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 "jwt.secret=test_jwt_secret_placeholder_minimum_32_bytes_long_value",
                 "jwt.expiration=86400000",
                 "jwt.refresh-expiration=604800000",
-                "jwt.issuer=foodv-backend-test"
+                "jwt.issuer=nomi-backend-test"
         }
 )
 @ImportAutoConfiguration({
@@ -103,7 +103,7 @@ class OrderControllerTest {
         when(createOrderUseCase.execute(any())).thenReturn(order(1L));
 
         mockMvc.perform(post("/orders")
-                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 1L, "owner@foodv.com"))
+                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 1L, "owner@nomi.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createOrderBody())))
                 .andExpect(status().isCreated());
@@ -112,7 +112,7 @@ class OrderControllerTest {
     @Test
     void create_order_repartidor_returns_403() throws Exception {
         mockMvc.perform(post("/orders")
-                        .header("Authorization", "Bearer " + token(UserRole.REPARTIDOR, 2L, "rider@foodv.com"))
+                        .header("Authorization", "Bearer " + token(UserRole.REPARTIDOR, 2L, "rider@nomi.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createOrderBody())))
                 .andExpect(status().isForbidden());
@@ -120,20 +120,20 @@ class OrderControllerTest {
 
     @Test
     void find_order_owner_returns_200() throws Exception {
-        when(findOrderUseCase.findByIdForUser(10L, "owner@foodv.com")).thenReturn(order(10L));
+        when(findOrderUseCase.findByIdForUser(10L, "owner@nomi.com")).thenReturn(order(10L));
 
         mockMvc.perform(get("/orders/10")
-                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 1L, "owner@foodv.com")))
+                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 1L, "owner@nomi.com")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void find_order_non_owner_returns_403() throws Exception {
         doThrow(new AccessDeniedException("No tienes permiso para ver esta orden"))
-                .when(findOrderUseCase).findByIdForUser(10L, "other@foodv.com");
+                .when(findOrderUseCase).findByIdForUser(10L, "other@nomi.com");
 
         mockMvc.perform(get("/orders/10")
-                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 2L, "other@foodv.com")))
+                        .header("Authorization", "Bearer " + token(UserRole.ESTUDIANTE, 2L, "other@nomi.com")))
                 .andExpect(status().isForbidden());
     }
 
@@ -185,7 +185,7 @@ class OrderControllerTest {
                 .total(BigDecimal.TEN)
                 .propina(BigDecimal.ZERO)
                 .tarifaServicio(BigDecimal.ZERO)
-                .comisionFoodv(BigDecimal.ZERO)
+                .comisionNomi(BigDecimal.ZERO)
                 .status(OrderStatus.PENDIENTE)
                 .creadoEn(LocalDateTime.now())
                 .build();
@@ -208,7 +208,7 @@ class OrderControllerTest {
             jwtConfig.setSecret("test_jwt_secret_placeholder_minimum_32_bytes_long_value");
             jwtConfig.setExpiration(86_400_000L);
             jwtConfig.setRefreshExpiration(604_800_000L);
-            jwtConfig.setIssuer("foodv-backend-test");
+            jwtConfig.setIssuer("nomi-backend-test");
             return jwtConfig;
         }
 
@@ -221,7 +221,7 @@ class OrderControllerTest {
                             order.getId(), order.getUserId(), order.getStoreId(), order.getAulaId(),
                             order.getRepartidorId(),
                             order.getItems() == null ? List.of() : order.getItems().stream().map(this::toItemResponse).toList(),
-                            order.getTotal(), order.getPropina(), order.getTarifaServicio(), order.getComisionFoodv(),
+                            order.getTotal(), order.getPropina(), order.getTarifaServicio(), order.getComisionNomi(),
                             order.getStatus(), order.getStatus().enEspanol(), order.getNotas(),
                             order.getMotivoCancelacion(), order.getCanceladoPor(), order.getCodigoConfirmacion(),
                             order.getFotoEntregaUrl(), order.getCreadoEn(), order.getActualizadoEn()
@@ -235,12 +235,12 @@ class OrderControllerTest {
                 }
 
                 @Override
-                public CreateOrderUseCase.CreateOrderCommand toCommand(com.foodv.backend.infrastructure.web.dto.order.CreateOrderRequest request) {
+                public CreateOrderUseCase.CreateOrderCommand toCommand(com.nomi.backend.infrastructure.web.dto.order.CreateOrderRequest request) {
                     return toCommandWithUser(request, null);
                 }
 
                 @Override
-                public CreateOrderUseCase.OrderItemCommand toItemCommand(com.foodv.backend.infrastructure.web.dto.order.OrderItemRequest request) {
+                public CreateOrderUseCase.OrderItemCommand toItemCommand(com.nomi.backend.infrastructure.web.dto.order.OrderItemRequest request) {
                     return new CreateOrderUseCase.OrderItemCommand(request.productId(), request.cantidad());
                 }
 

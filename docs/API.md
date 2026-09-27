@@ -93,7 +93,7 @@ inválido solo trae `error`), así que los clientes deben tratarlos todos como o
 - **`GET /users/me`** devuelve los datos contenidos en el token: apellidos, teléfono y
   preferencias llegan `null`.
 - **`OrderResponse.total`** es el subtotal de productos. Lo cobrado es
-  `total + propina + tarifaServicio + comisionFoodv`.
+  `total + propina + tarifaServicio + comisionNomi`.
 - **Propina**: no negativa y como máximo el 50 % del subtotal (redondeo half-up a 2 decimales).
 - **Un pago por pedido**: un segundo `POST /payments` responde 400. Consultar primero
   `GET /payments/order/{orderId}` (404 si no existe).

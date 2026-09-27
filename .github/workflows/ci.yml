@@ -1,4 +1,4 @@
-name: FoodV Backend CI
+name: Nomi Backend CI
 
 on:
   push:
@@ -15,8 +15,8 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: foodv_db
-          POSTGRES_USER: foodv_user
+          POSTGRES_DB: nomi_db
+          POSTGRES_USER: nomi_user
           POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD || 'ci_db_password_placeholder' }}
         ports:
           - 5432:5432
@@ -54,15 +54,15 @@ jobs:
         env:
           DB_HOST: localhost
           DB_PORT: 5432
-          DB_NAME: foodv_db
-          DB_USERNAME: foodv_user
+          DB_NAME: nomi_db
+          DB_USERNAME: nomi_user
           DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD || 'ci_db_password_placeholder' }}
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           JWT_SECRET: ${{ secrets.CI_JWT_SECRET || 'ci_jwt_secret_placeholder_min_32_bytes' }}
           JWT_EXPIRATION: 86400000
           JWT_REFRESH_EXPIRATION: 604800000
-          JWT_ISSUER: foodv-backend
+          JWT_ISSUER: nomi-backend
           MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.CI_MERCADOPAGO_ACCESS_TOKEN || 'ci_mercadopago_access_token_placeholder' }}
           MERCADOPAGO_PUBLIC_KEY: ${{ secrets.CI_MERCADOPAGO_PUBLIC_KEY || 'ci_mercadopago_public_key_placeholder' }}
           MERCADOPAGO_WEBHOOK_SECRET: ${{ secrets.CI_MERCADOPAGO_WEBHOOK_SECRET || 'ci_mercadopago_webhook_secret_placeholder' }}
@@ -107,7 +107,7 @@ jobs:
       - name: Subir artifact
         uses: actions/upload-artifact@v4
         with:
-          name: foodv-backend-jar
+          name: nomi-backend-jar
           path: target/*.jar
           retention-days: 7
 
@@ -121,16 +121,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t foodv-backend:latest .
+        run: docker build -t nomi-backend:latest .
 
       - name: Save Docker image
-        run: docker save foodv-backend:latest | gzip > foodv-backend.tar.gz
+        run: docker save nomi-backend:latest | gzip > nomi-backend.tar.gz
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
-          path: foodv-backend.tar.gz
+          path: nomi-backend.tar.gz
           retention-days: 1
 
   trivy-scan:
@@ -146,12 +146,12 @@ jobs:
           name: docker-image
 
       - name: Load Docker image
-        run: docker load < foodv-backend.tar.gz
+        run: docker load < nomi-backend.tar.gz
 
       - name: Run Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: foodv-backend:latest
+          image-ref: nomi-backend:latest
           format: table
           exit-code: 1
           severity: CRITICAL,HIGH

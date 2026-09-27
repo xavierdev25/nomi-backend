@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/foodv_db
+    url: jdbc:postgresql://localhost:5432/nomi_db
     driver-class-name: org.postgresql.Driver
-    username: foodv_user
+    username: nomi_user
     password: ${DB_PASSWORD:test_db_password_placeholder}
   jpa:
     show-sql: false
@@ -21,14 +21,14 @@ spring:
 logging:
   level:
     root: WARN
-    com.foodv.backend: INFO
+    com.nomi.backend: INFO
     org.flywaydb: INFO
 
 jwt:
   secret: ${JWT_SECRET:test_jwt_secret_placeholder_minimum_32_bytes_long_value}
   expiration: 86400000
   refresh-expiration: 604800000
-  issuer: foodv-backend
+  issuer: nomi-backend
 
 mercadopago:
   access-token: TEST-placeholder

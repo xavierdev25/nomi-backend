@@ -14,7 +14,7 @@ Una clase concreta: `./mvnw test -Dtest=OrderDomainServiceTest`.
 | Tipo | Necesita |
 |---|---|
 | Unitarios y de controlador | Nada |
-| Integración con perfil `test` (`BackendApplicationTests`, `*RepositoryIntegrationTest`) | PostgreSQL en `localhost:5432`, base `foodv_db`, usuario `foodv_user` (contraseña por `DB_PASSWORD`), y Redis en `6380` |
+| Integración con perfil `test` (`BackendApplicationTests`, `*RepositoryIntegrationTest`) | PostgreSQL en `localhost:5432`, base `nomi_db`, usuario `nomi_user` (contraseña por `DB_PASSWORD`), y Redis en `6380` |
 
 Configuración en `src/test/resources/application-test.yaml` (sin caché, sin Docker Compose). En
 local, si tu PostgreSQL de desarrollo está en otro puerto, levanta uno desechable en el 5432 para
@@ -48,7 +48,7 @@ los tests. Testcontainers está en el `pom.xml` pero aún no se usa (auditoría 
 | `PaymentControllerTest` | 3 | Webhook: firma válida, inválida y payload incompleto |
 | `CreateUserHandlerTest` | 3 | Alta de usuarios |
 | `UserRepositoryIntegrationTest` | 3 | Consultas de usuarios |
-| `AiServiceAdapterTest` | 3 | Circuit breaker abierto → degradación sin llamar al servicio; los `4xx` no abren el circuito; cabecera `X-FoodV-User-Id` |
+| `AiServiceAdapterTest` | 3 | Circuit breaker abierto → degradación sin llamar al servicio; los `4xx` no abren el circuito; cabecera `X-Nomi-User-Id` |
 | `BackendApplicationTests` | 1 | Arranque del contexto |
 
 **Sin cubrir** (prioridad alta, ver auditoría M11): `ProcessWebhookHandler` por cada estado de

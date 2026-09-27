@@ -15,14 +15,14 @@ ni en el repositorio.**
 |---|---|---|---|
 | `SPRING_PROFILES_ACTIVE` | En despliegue | `dev` | `dev` o `prod`. Fija `prod` fuera de local. |
 | `SERVER_PORT` | No | `8080` | Puerto HTTP |
-| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME` | No | `localhost`, `5432`, `foodv_db`, `foodv_user` | Conexión a PostgreSQL |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME` | No | `localhost`, `5432`, `nomi_db`, `nomi_user` | Conexión a PostgreSQL |
 | `DB_PASSWORD` | Sí | — | Contraseña de PostgreSQL |
 | `DB_POOL_SIZE` | No | `10` | Máximo de conexiones Hikari |
 | `REDIS_HOST`, `REDIS_PORT` | No | `localhost`, `6379` (`6380` en `dev`) | Redis |
 | `JWT_SECRET` | Sí | — | Secreto HMAC, **mínimo 32 bytes** |
 | `JWT_EXPIRATION` | No | `86400000` (24 h) | Vida del access token, en ms |
 | `JWT_REFRESH_EXPIRATION` | No | `604800000` (7 días) | Vida del refresh token, en ms |
-| `JWT_ISSUER` | No | `foodv-backend` | Emisor del JWT |
+| `JWT_ISSUER` | No | `nomi-backend` | Emisor del JWT |
 | `MERCADOPAGO_ACCESS_TOKEN`, `MERCADOPAGO_PUBLIC_KEY` | Sí | — | Credenciales de MercadoPago (`TEST-…` fuera de producción) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Sí | — | Secreto de la firma del webhook; sin él se rechazan todos los webhooks |
 | `MERCADOPAGO_NOTIFICATION_URL` | No | `http://localhost:8080/api/payments/webhook` | URL pública del webhook |
@@ -57,15 +57,15 @@ docker compose up -d postgres redis
 ./mvnw spring-boot:run
 ```
 
-`docker-compose.yml` define `postgres` (puerto `DB_PORT`), `redis` (`6380` en el host) y un
-`ai-service` cuya ruta de build (`../foodv-ai-service`) no existe en este workspace. pgAdmin está
-en `docker-compose.override.yml.example`.
+`docker-compose.yml` define `postgres` (puerto `DB_PORT`), `redis` (`6380` en el host) y
+`ai-service`, que se construye desde `../nomi-ai-service` (el repositorio vecino) y usa el Ollama
+del host. pgAdmin está en `docker-compose.override.yml.example`.
 
 ## 3. Imagen Docker
 
 ```bash
-docker build -t foodv-backend .
-docker run --env-file .env -e SPRING_PROFILES_ACTIVE=prod -p 8080:8080 foodv-backend
+docker build -t nomi-backend .
+docker run --env-file .env -e SPRING_PROFILES_ACTIVE=prod -p 8080:8080 nomi-backend
 ```
 
 El `Dockerfile` compila con Maven (sin tests) y ejecuta el JAR con JRE 21 Alpine como usuario sin
@@ -99,6 +99,6 @@ de GitHub Secrets y tienen marcadores de respaldo.
 | Síntoma | Causa |
 |---|---|
 | `JWT_SECRET debe tener al menos 32 bytes… Actual: 13` | La variable no se resolvió: falta en el entorno y en `.env` (13 es la longitud de `${JWT_SECRET}`). |
-| El arranque intenta construir `ai-service` | Spring Boot levanta el compose al no encontrar servicios: arranca antes `postgres` y `redis`. |
+| El arranque construye `ai-service` o choca con el puerto 8001 | Spring Boot levanta todo el compose si no encuentra servicios corriendo. Si ejecutas la IA con `uvicorn`, arranca antes solo `postgres` y `redis`. |
 | No conecta a Redis | En el host es `6380`; dentro de la red de Docker, `6379`. |
 | El webhook no llega en local | MercadoPago necesita una URL pública: usa un túnel (ngrok o similar) en `MERCADOPAGO_NOTIFICATION_URL`. |

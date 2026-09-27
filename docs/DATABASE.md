@@ -54,7 +54,7 @@ orders >── aulas
 - **Snapshots:** `order_items` guarda el nombre y el precio del producto al comprar; cambiar el
   producto no altera pedidos pasados.
 - **Importes del pedido:** `orders.total` es el subtotal de productos; propina, tarifa y comisión
-  van en columnas propias. Los `DEFAULT` de `tarifa_servicio` y `comision_foodv` no son los valores
+  van en columnas propias. Los `DEFAULT` de `tarifa_servicio` y `comision_nomi` no son los valores
   reales: los decide `CreateOrderHandler`.
 - **Stock:** se descuenta con un `UPDATE` condicional (`stock >= cantidad`), atómico frente a
   pedidos simultáneos, que recalcula `disponible`.

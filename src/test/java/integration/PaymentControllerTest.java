@@ -1,13 +1,13 @@
 package integration;
 
-import com.foodv.backend.domain.port.in.payment.CreatePaymentUseCase;
-import com.foodv.backend.domain.port.in.payment.FindPaymentUseCase;
-import com.foodv.backend.domain.port.in.payment.ProcessWebhookUseCase;
-import com.foodv.backend.infrastructure.payment.MercadoPagoSignatureVerifier;
-import com.foodv.backend.infrastructure.security.AuthenticatedUserResolver;
-import com.foodv.backend.infrastructure.web.controller.GlobalExceptionHandler;
-import com.foodv.backend.infrastructure.web.controller.PaymentController;
-import com.foodv.backend.infrastructure.web.mapper.PaymentWebMapper;
+import com.nomi.backend.domain.port.in.payment.CreatePaymentUseCase;
+import com.nomi.backend.domain.port.in.payment.FindPaymentUseCase;
+import com.nomi.backend.domain.port.in.payment.ProcessWebhookUseCase;
+import com.nomi.backend.infrastructure.payment.MercadoPagoSignatureVerifier;
+import com.nomi.backend.infrastructure.security.AuthenticatedUserResolver;
+import com.nomi.backend.infrastructure.web.controller.GlobalExceptionHandler;
+import com.nomi.backend.infrastructure.web.controller.PaymentController;
+import com.nomi.backend.infrastructure.web.mapper.PaymentWebMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

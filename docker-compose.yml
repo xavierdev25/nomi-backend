@@ -1,5 +1,5 @@
 # =============================================
-# FoodV Backend — Docker Compose
+# Nomi Backend — Docker Compose
 # =============================================
 version: "3.9"
 
@@ -7,7 +7,7 @@ services:
   # ── PostgreSQL 16 ────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: foodv-postgres
+    container_name: nomi-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:?DB_NAME is required}
@@ -23,28 +23,28 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - foodv-network
+      - nomi-network
 
   redis:
     image: redis:7-alpine
-    container_name: foodv-redis
+    container_name: nomi-redis
     restart: unless-stopped
     ports:
       - "6380:6379"
     networks:
-      - foodv-network
+      - nomi-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ── FoodV AI Service ─────────────────────
+  # ── Nomi AI Service ─────────────────────
   ai-service:
     build:
-      context: ../foodv-ai-service
+      context: ../nomi-ai-service
       dockerfile: Dockerfile
-    container_name: foodv-ai-service
+    container_name: nomi-ai-service
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -54,7 +54,7 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080}
       API_SECRET_KEY: ${AI_SERVICE_SECRET_KEY:?AI_SERVICE_SECRET_KEY is required}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      REDIS_URL: redis://foodv-redis:6379
+      REDIS_URL: redis://nomi-redis:6379
       AI_CACHE_TTL_SECONDS: ${AI_CACHE_TTL_SECONDS:-300}
     ports:
       - "8001:8001"
@@ -62,7 +62,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - foodv-network
+      - nomi-network
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
       interval: 30s
@@ -74,5 +74,5 @@ volumes:
     driver: local
 
 networks:
-  foodv-network:
+  nomi-network:
     driver: bridge

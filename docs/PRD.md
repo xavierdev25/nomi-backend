@@ -1,8 +1,8 @@
-# PRD — Backend de FoodV
+# PRD — Backend de Nomi
 
 ## 1. Propósito
 
-Ser la fuente de verdad de FoodV: quién es cada usuario y qué puede hacer, qué se vende, cuánto
+Ser la fuente de verdad de Nomi: quién es cada usuario y qué puede hacer, qué se vende, cuánto
 cuesta, qué stock queda, en qué estado está cada pedido y si se pagó. Los clientes (app iOS)
 solo presentan y solicitan; toda regla de negocio se aplica aquí.
 
@@ -45,7 +45,7 @@ El contexto de producto (actores, ciclo del pedido, reglas) está en `nomi-docs`
 - **RF-12** Crear un pedido de una sola tienda activa, con productos disponibles y stock
   suficiente. El stock se **reserva al crear** con un descuento atómico.
 - **RF-13** Importes calculados en el servidor: `total` (subtotal de productos), `propina`
-  (máximo 50 % del subtotal), `tarifaServicio` S/ 0.50 y `comisionFoodv` S/ 0.20.
+  (máximo 50 % del subtotal), `tarifaServicio` S/ 0.50 y `comisionNomi` S/ 0.20.
 - **RF-14** Código de confirmación por pedido.
 - **RF-15** Máquina de estados: `PENDIENTE → PREPARANDO → LISTO_PARA_RECOGER → EN_CAMINO →
   ENTREGADO`, y `PENDIENTE → CANCELADO`. Ningún otro salto es válido.
