@@ -47,6 +47,9 @@ orders >── aulas
 | V20 | `CHECK` de estados válidos del pedido |
 | V21 | `CHECK` de `budget_range` (`BAJO`, `MEDIO`, `ALTO`) |
 | V22 | `products.etiquetas_dieteticas` (`TEXT[]`, por defecto vacío) con `CHECK` de valores válidos |
+| V23 | Renombra la columna de comisión de la plataforma a `orders.comision_nomi` |
+| V24 | `orders.pago_expira_en` (plazo para pagar; los pedidos `PENDIENTE` existentes reciben `creado_en + 15 min`) con índice parcial sobre los pendientes, y `payments.gateway_payment_id` |
+| V25 | `payments.external_reference`: referencia única del checkout (`nomi-<pedido>-<uuid>`), con índice único parcial |
 
 ## 3. Reglas de datos
 
@@ -58,6 +61,16 @@ orders >── aulas
   reales: los decide `CreateOrderHandler`.
 - **Stock:** se descuenta con un `UPDATE` condicional (`stock >= cantidad`), atómico frente a
   pedidos simultáneos, que recalcula `disponible`.
+- **Salir de `PENDIENTE`:** el paso a `PREPARANDO` (pago aprobado) y la cancelación son `UPDATE`
+  condicionales (`… WHERE status = 'PENDIENTE'`, `OrderJpaRepository.updateStatusIf` y
+  `cancelIf`). Si webhook, cancelación y caducidad coinciden, solo uno cambia la fila; el stock se
+  devuelve solo si la cancelación ganó.
+- **Plazo para pagar:** `orders.pago_expira_en`. `NULL` en pedidos que ya no estaban pendientes al
+  aplicar V24: esos nunca caducan.
+- **Pagos:** `payments.external_id` es el checkout (preferencia), `external_reference` su
+  referencia única en MercadoPago (`NULL` en los anteriores a V25, que se buscan por el id del
+  pedido) y `gateway_payment_id` el pago de MercadoPago que decidió el estado; distingue un aviso
+  repetido de un cobro duplicado.
 - **Soft delete:** usuarios, tiendas y productos se marcan con `deleted_at`. El email es único
   sin distinguir mayúsculas entre usuarios no borrados (`uq_users_email_alive`).
 - **Unicidades:** refresh token, `external_id` de pago, un favorito por usuario y producto o
@@ -74,7 +87,7 @@ orders >── aulas
 
 ## 4. Cómo cambiar el esquema
 
-1. Crea `V23__descripcion_en_snake_case.sql` (siguiente número libre).
+1. Crea `V26__descripcion_en_snake_case.sql` (siguiente número libre).
 2. Escribe SQL idempotente cuando sea razonable (`IF NOT EXISTS`, bloques `DO $$`).
 3. **Nunca edites una migración ya aplicada**: `validate-on-migrate` hará fallar el arranque.
 4. Actualiza la entidad JPA, el modelo de dominio, el adaptador y el mapper.
@@ -87,6 +100,8 @@ orders >── aulas
 |---|---|---|
 | `TokenCleanupScheduler` | Diario, 3:00 | Borra refresh tokens expirados y los revocados hace más de un día |
 | `SoftDeleteCleanupScheduler` | Diario, 4:00 | Intenta borrar usuarios eliminados hace más de 7 días; falla si tienen pedidos (auditoría M5) |
+| `PendingOrdersReconciliationScheduler` | Cada 60 s (`ORDER_RECONCILE_INTERVAL_MS`) | Confirma pedidos pendientes ya pagados en MercadoPago y cancela los vencidos sin pago, devolviendo el stock |
+| `LatePaymentsRefundScheduler` | Cada 10 min (`ORDER_LATE_PAYMENT_CHECK_INTERVAL_MS`) | Reembolsa los pagos aprobados de pedidos cancelados en las últimas 72 h (`ORDER_LATE_PAYMENT_WINDOW_HOURS`) |
 
 ## 6. Datos de prueba
 

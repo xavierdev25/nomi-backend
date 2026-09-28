@@ -1,0 +1,471 @@
+{
+  "version": "C0",
+  "estado": "PROVISIONAL — solo para pruebas técnicas, familiarización y VAL; no para la muestra oficial",
+  "naturaleza": "Datos sintéticos de prueba. No es el catálogo real del ISTPC ni el del pretest.",
+  "tienda": "Quiosco ISTPC (entorno de prueba)",
+  "regla_stock": "Stock inicial uniforme de 25 unidades por producto, sin relación con las consignas",
+  "productos": [
+    {
+      "codigo": "C01",
+      "nombre": "Arroz con pollo",
+      "categoria": "COMIDA",
+      "precio": "8.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C02",
+      "nombre": "Tallarines verdes con papa",
+      "categoria": "COMIDA",
+      "precio": "8.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C03",
+      "nombre": "Ají de gallina",
+      "categoria": "COMIDA",
+      "precio": "9.00",
+      "stock": 25,
+      "etiquetas": [],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C04",
+      "nombre": "Lomo saltado",
+      "categoria": "COMIDA",
+      "precio": "12.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C05",
+      "nombre": "Arroz chaufa de pollo",
+      "categoria": "COMIDA",
+      "precio": "9.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C06",
+      "nombre": "Chaufa de verduras",
+      "categoria": "COMIDA",
+      "precio": "8.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C07",
+      "nombre": "Causa de pollo",
+      "categoria": "COMIDA",
+      "precio": "6.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_GLUTEN"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C08",
+      "nombre": "Papa a la huancaína",
+      "categoria": "COMIDA",
+      "precio": "5.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "SIN_GLUTEN"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C09",
+      "nombre": "Ensalada de quinua",
+      "categoria": "COMIDA",
+      "precio": "7.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C10",
+      "nombre": "Tamal de cerdo",
+      "categoria": "COMIDA",
+      "precio": "4.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_GLUTEN"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C11",
+      "nombre": "Salchipapa",
+      "categoria": "COMIDA",
+      "precio": "6.00",
+      "stock": 25,
+      "etiquetas": [],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C12",
+      "nombre": "Pan con pollo",
+      "categoria": "COMIDA",
+      "precio": "5.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C13",
+      "nombre": "Pan con chicharrón",
+      "categoria": "COMIDA",
+      "precio": "6.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C14",
+      "nombre": "Pan con palta",
+      "categoria": "COMIDA",
+      "precio": "3.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C15",
+      "nombre": "Triple (palta, tomate y huevo)",
+      "categoria": "COMIDA",
+      "precio": "4.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C16",
+      "nombre": "Empanada de carne",
+      "categoria": "COMIDA",
+      "precio": "4.00",
+      "stock": 25,
+      "etiquetas": [],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C17",
+      "nombre": "Chicha morada 500 ml",
+      "categoria": "BEBIDA",
+      "precio": "2.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C18",
+      "nombre": "Emoliente",
+      "categoria": "BEBIDA",
+      "precio": "1.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C19",
+      "nombre": "Agua mineral 625 ml",
+      "categoria": "BEBIDA",
+      "precio": "1.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C20",
+      "nombre": "Gaseosa 500 ml",
+      "categoria": "BEBIDA",
+      "precio": "3.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C21",
+      "nombre": "Café pasado",
+      "categoria": "BEBIDA",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C22",
+      "nombre": "Yogurt bebible",
+      "categoria": "BEBIDA",
+      "precio": "3.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "SIN_GLUTEN"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C23",
+      "nombre": "Jugo de papaya",
+      "categoria": "BEBIDA",
+      "precio": "4.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C24",
+      "nombre": "Avena con leche",
+      "categoria": "BEBIDA",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C25",
+      "nombre": "Quinua con manzana",
+      "categoria": "BEBIDA",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C26",
+      "nombre": "Papas fritas en bolsa",
+      "categoria": "SNACK",
+      "precio": "2.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C27",
+      "nombre": "Galletas de soda",
+      "categoria": "SNACK",
+      "precio": "1.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C28",
+      "nombre": "Maní salado",
+      "categoria": "SNACK",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C29",
+      "nombre": "Chifles",
+      "categoria": "SNACK",
+      "precio": "2.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C30",
+      "nombre": "Barra de cereal",
+      "categoria": "SNACK",
+      "precio": "2.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C31",
+      "nombre": "Alfajor",
+      "categoria": "POSTRE",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C32",
+      "nombre": "Arroz con leche",
+      "categoria": "POSTRE",
+      "precio": "3.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "SIN_GLUTEN"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C33",
+      "nombre": "Mazamorra morada",
+      "categoria": "POSTRE",
+      "precio": "3.00",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C34",
+      "nombre": "Gelatina",
+      "categoria": "POSTRE",
+      "precio": "2.00",
+      "stock": 25,
+      "etiquetas": [
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    },
+    {
+      "codigo": "C35",
+      "nombre": "Fruta picada",
+      "categoria": "POSTRE",
+      "precio": "3.50",
+      "stock": 25,
+      "etiquetas": [
+        "VEGETARIANO",
+        "VEGANO",
+        "SIN_GLUTEN",
+        "SIN_LACTOSA"
+      ],
+      "publicado": true,
+      "disponible": true
+    }
+  ]
+}

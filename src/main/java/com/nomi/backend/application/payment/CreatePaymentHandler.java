@@ -3,6 +3,8 @@ package com.nomi.backend.application.payment;
 import com.nomi.backend.domain.exception.AuthorizationException;
 import com.nomi.backend.domain.exception.ResourceNotFoundException;
 import com.nomi.backend.domain.model.order.Order;
+import com.nomi.backend.domain.model.order.OrderStatus;
+import com.nomi.backend.domain.model.payment.CheckoutReference;
 import com.nomi.backend.domain.model.payment.Payment;
 import com.nomi.backend.domain.model.payment.PaymentStatus;
 import com.nomi.backend.domain.model.user.User;
@@ -16,13 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 /**
  * Crea el pago de un pedido en MercadoPago.
  *
  * <p>El monto se calcula en el servidor ({@code total + propina + tarifa + comisión}); el
  * cliente solo envía el id del pedido. Solo el dueño del pedido o un administrador pueden
- * pagarlo, y un pedido admite un único pago: un segundo intento responde 400.
+ * pagarlo, y un pedido admite un único checkout: un segundo intento responde 400 (el estudiante
+ * reintenta dentro del mismo checkout de MercadoPago).
+ *
+ * <p>Solo se paga un pedido pendiente y dentro de plazo, y el checkout caduca a la misma hora que
+ * el pedido: así nadie paga un pedido que ya se canceló por falta de pago.
  */
 public class CreatePaymentHandler implements CreatePaymentUseCase {
 
@@ -30,18 +38,18 @@ public class CreatePaymentHandler implements CreatePaymentUseCase {
     private final PaymentGatewayPort paymentGatewayPort;
     private final OrderRepositoryPort orderRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
-    private final String notificationUrl;
+    private final String returnUrl;
 
     public CreatePaymentHandler(PaymentRepositoryPort paymentRepositoryPort,
                                 PaymentGatewayPort paymentGatewayPort,
                                 OrderRepositoryPort orderRepositoryPort,
                                 UserRepositoryPort userRepositoryPort,
-                                String notificationUrl) {
+                                String returnUrl) {
         this.paymentRepositoryPort = paymentRepositoryPort;
         this.paymentGatewayPort = paymentGatewayPort;
         this.orderRepositoryPort = orderRepositoryPort;
         this.userRepositoryPort = userRepositoryPort;
-        this.notificationUrl = notificationUrl;
+        this.returnUrl = returnUrl;
     }
 
     @Override
@@ -61,6 +69,14 @@ public class CreatePaymentHandler implements CreatePaymentUseCase {
             throw new AuthorizationException("No puedes pagar una orden ajena");
         }
 
+        if (order.getStatus() != OrderStatus.PENDIENTE) {
+            throw new IllegalStateException("Este pedido ya no admite pagos (" + order.getStatus().enEspanol() + ")");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (order.isPaymentExpired(now)) {
+            throw new IllegalStateException("El plazo para pagar este pedido terminó; se cancelará en breve");
+        }
+
         if (paymentRepositoryPort.findByOrderId(command.orderId()).isPresent()) {
             throw new IllegalArgumentException("Ya existe un pago para esta orden");
         }
@@ -72,12 +88,19 @@ public class CreatePaymentHandler implements CreatePaymentUseCase {
 
         String description = "Pago Nomi - Orden #" + order.getId();
 
+        // El checkout deja de aceptar pagos a la misma hora que vence el pedido.
+        OffsetDateTime expiresAt = order.getPagoExpiraEn() == null
+                ? null
+                : order.getPagoExpiraEn().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        String externalReference = CheckoutReference.newFor(order.getId());
         PaymentGatewayPort.PaymentRequest request = new PaymentGatewayPort.PaymentRequest(
                 order.getId(),
                 order.getUserId(),
                 amount,
                 description,
-                notificationUrl
+                returnUrl,
+                expiresAt,
+                externalReference
         );
 
         PaymentGatewayPort.PaymentResponse response = paymentGatewayPort.createPayment(request);
@@ -88,6 +111,7 @@ public class CreatePaymentHandler implements CreatePaymentUseCase {
                 .amount(amount)
                 .status(PaymentStatus.PENDIENTE)
                 .externalId(response.externalId())
+                .externalReference(externalReference)
                 .paymentUrl(response.paymentUrl())
                 .creadoEn(LocalDateTime.now())
                 .actualizadoEn(LocalDateTime.now())

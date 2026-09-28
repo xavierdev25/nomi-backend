@@ -21,6 +21,7 @@ import java.util.List;
 public interface OrderWebMapper {
 
     @Mapping(target = "statusDescripcion", expression = "java(order.getStatus().enEspanol())")
+    @Mapping(target = "segundosParaPagar", expression = "java(order.segundosParaPagar(java.time.LocalDateTime.now()))")
     OrderResponse toResponse(Order order);
 
     OrderItemResponse toItemResponse(OrderItem item);

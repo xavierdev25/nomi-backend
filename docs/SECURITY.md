@@ -30,7 +30,17 @@ El backend es la frontera de confianza de Nomi: todo lo que llega de un cliente 
   `id:…;request-id:…;ts:…;` con `MERCADOPAGO_WEBHOOK_SECRET`, comparación en tiempo constante y
   tolerancia de 5 minutos en `ts`. Sin cabeceras → 401; firma inválida → 403.
 - Tras una notificación válida, el estado del pago se **consulta a MercadoPago**, no se toma del
-  cuerpo recibido.
+  cuerpo recibido. El pedido lo cambia solo un pago aprobado; si la consulta falla no se decide
+  nada (`503`/`500`) y se reintenta.
+- Un pedido solo se paga mientras está `PENDIENTE` y en plazo; el checkout vence con él y se
+  cierra al cancelar: nadie paga un pedido que ya no se va a entregar. Si aun así llega un pago aprobado para un pedido
+  cancelado, o un segundo pago del mismo pedido, se reembolsa.
+- Salir de `PENDIENTE` es una actualización condicional (`… WHERE status = 'PENDIENTE'`): webhook,
+  cancelación y caducidad simultáneos no pueden cobrar sin entregar ni devolver stock dos veces.
+- Ni tiendas ni repartidores pueden pasar un pedido a preparación sin pago ni cancelarlo con
+  `PATCH /status`.
+- Anti-acaparamiento: un pedido sin pagar caduca a los 15 minutos y cada estudiante tiene como
+  mucho 2 sin pagar.
 
 ## 4. Protección de la API
 
@@ -66,10 +76,7 @@ Detallados y priorizados en la auditoría técnica de `nomi-docs`:
 
 | ID | Riesgo |
 |---|---|
-| C1 | El webhook cancela pedidos con pago pendiente o en revisión |
 | A1 | Suscripciones WebSocket sin autorización |
-| A2 | Acaparamiento de stock con pedidos sin pagar |
-| A3 | Cancelar un pedido ya pagado no reembolsa |
 | A4 | Perfil `dev` por defecto |
 | A5 | Auto-registro como `COMERCIO`/`REPARTIDOR` sin verificación |
 | M1 | Rate limit evadible (tokens falsos, `X-Forwarded-For`, límite de pagos inactivo) |

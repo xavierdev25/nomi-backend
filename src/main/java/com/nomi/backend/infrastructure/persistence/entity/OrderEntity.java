@@ -79,4 +79,7 @@ public class OrderEntity {
 
     @Column(name = "foto_entrega_url")
     private String fotoEntregaUrl;
+
+    @Column(name = "pago_expira_en")
+    private LocalDateTime pagoExpiraEn;
 }

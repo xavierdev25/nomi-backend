@@ -116,6 +116,19 @@ cors:
   max-age: 3600
 
 # ── AI Service ─────────────────────────────
+nomi:
+  orders:
+    # Tiempo para pagar un pedido; después se cancela y su stock vuelve a estar disponible.
+    payment-window-minutes: ${ORDER_PAYMENT_WINDOW_MINUTES:15}
+    # Pedidos sin pagar que puede tener un estudiante a la vez.
+    max-pending-per-user: ${ORDER_MAX_PENDING_PER_USER:2}
+    # Cada cuánto se concilian los pedidos pendientes con MercadoPago y se cancelan los vencidos.
+    reconcile-interval-ms: ${ORDER_RECONCILE_INTERVAL_MS:60000}
+    # Cada cuánto se buscan pagos aprobados de pedidos ya cancelados (para reembolsarlos), y
+    # durante cuántas horas desde la cancelación.
+    late-payment-check-interval-ms: ${ORDER_LATE_PAYMENT_CHECK_INTERVAL_MS:600000}
+    late-payment-window-hours: ${ORDER_LATE_PAYMENT_WINDOW_HOURS:72}
+
 ai:
   service:
     url: ${AI_SERVICE_URL:http://localhost:8001}

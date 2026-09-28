@@ -43,6 +43,12 @@ public record OrderResponse(
         String codigoConfirmacion,
         @Schema(description = "Foto de la entrega (todavía sin uso)")
         String fotoEntregaUrl,
+        @Schema(description = "Hasta cuándo se puede pagar (hora local del servidor, sin zona). Después el pedido se cancela y el stock vuelve a la tienda; null en pedidos anteriores a esta regla",
+                example = "2026-09-26T00:28:59.905824")
+        LocalDateTime pagoExpiraEn,
+        @Schema(description = "Segundos que quedan para pagar, calculados por el servidor para no depender del reloj ni de la zona del teléfono. Solo en pedidos PENDIENTE con plazo; 0 si ya venció",
+                example = "840")
+        Long segundosParaPagar,
         @Schema(description = "Fecha de creación (hora local del servidor, sin zona)", example = "2026-09-26T00:13:59.905824")
         LocalDateTime creadoEn,
         @Schema(description = "Última modificación (hora local del servidor, sin zona)", example = "2026-09-26T00:13:59.905828")

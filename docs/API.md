@@ -46,6 +46,7 @@ inválido solo trae `error`), así que los clientes deben tratarlos todos como o
 | `409` | Conflicto de datos (duplicados) o estado no permitido (`IllegalStateException`) |
 | `429` | Rate limit superado; incluye `Retry-After` |
 | `500` | Error inesperado (sin detalles internos) |
+| `503` | MercadoPago no respondió al consultar un pago; reintentar en unos segundos |
 
 > Los clientes renuevan la sesión solo ante `401`. Un `403` significa "no puedes", no "tu sesión
 > expiró".
@@ -95,15 +96,28 @@ inválido solo trae `error`), así que los clientes deben tratarlos todos como o
 - **`OrderResponse.total`** es el subtotal de productos. Lo cobrado es
   `total + propina + tarifaServicio + comisionNomi`.
 - **Propina**: no negativa y como máximo el 50 % del subtotal (redondeo half-up a 2 decimales).
+- **Plazo para pagar**: `OrderResponse.pagoExpiraEn` es la hora límite y `segundosParaPagar` lo
+  que queda, calculado por el servidor (usar este para la cuenta atrás: las fechas no llevan zona).
+  Vencido sin pago aprobado, el pedido se cancela solo en menos de un minuto. Con 2 pedidos sin
+  pagar y en plazo, `POST /orders` responde 409.
 - **Un pago por pedido**: un segundo `POST /payments` responde 400. Consultar primero
-  `GET /payments/order/{orderId}` (404 si no existe).
-- **Cancelar**: solo en `PENDIENTE`; devuelve el stock.
+  `GET /payments/order/{orderId}` (404 si no existe). Pagar un pedido que ya no está `PENDIENTE`
+  o cuyo plazo venció responde 409.
+- **Cancelar**: solo en `PENDIENTE`; devuelve el stock y cierra el checkout en MercadoPago. Si el
+  pago ya estaba aprobado responde 409 y el pedido pasa a `PREPARANDO`; si MercadoPago no responde,
+  503 (no se cancela a ciegas). Un pago que se apruebe después se reembolsa automáticamente.
+- **`PATCH /orders/{id}/status`** no saca un pedido de `PENDIENTE`: `PREPARANDO` lo decide el pago
+  aprobado y `CANCELADO` se pide con `/cancel` (ambos responden 409).
 - **Recomendaciones**: nunca fallan y nunca incluyen un producto que no cumpla las restricciones
   del estudiante (se filtra en el backend antes de llamar al modelo). `generatedBy` indica el
   origen: el modelo (`phi3`, `groq/…`), `SIN_CANDIDATOS` (ningún producto cumple los filtros; no
   se llama a la IA) o `FALLBACK` (la IA falló). Límite de 5 peticiones por minuto.
-- **Webhook**: MercadoPago envía `x-signature` y `x-request-id`. Sin cabeceras responde 401 y con
-  una firma inválida, 403.
+- **Webhook**: MercadoPago llama a `?data.id=<pago>&type=payment` (o `topic=payment` en el
+  formato IPN antiguo) con `x-signature` y `x-request-id`. Sin cabeceras responde 401; con una
+  firma inválida, 403; sin tipo de evento, 400. Los eventos que no son de pago responden 200 sin
+  procesarse. El backend consulta el pago en MercadoPago en vez de fiarse del aviso;
+  solo un pago aprobado cambia el pedido. Si la consulta o un reembolso fallan responde 500 para
+  que MercadoPago reenvíe; reprocesar el mismo aviso no tiene efecto.
 
 ## 5. Tiempo real
 

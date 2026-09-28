@@ -1,6 +1,7 @@
 package com.nomi.backend.application.order;
 
 import com.nomi.backend.domain.model.order.Order;
+import com.nomi.backend.domain.model.order.OrderPaymentPolicy;
 import com.nomi.backend.domain.model.order.OrderStatus;
 import com.nomi.backend.domain.model.product.Product;
 import com.nomi.backend.domain.model.product.ProductCategory;
@@ -14,11 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
- * Creación de pedidos: cálculo de importes y validaciones de usuario, tienda y stock.
+ * Creación de pedidos: cálculo de importes, plazo de pago, límite de pedidos sin pagar y
+ * validaciones de usuario, tienda y stock.
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CreateOrderHandler - Creación de órdenes")
@@ -44,7 +46,9 @@ class CreateOrderHandlerTest {
     @Mock private BusinessMetricsPort metricsPort;
     @Mock private SecureRandomPort secureRandomPort;
 
-    @InjectMocks private CreateOrderHandler createOrderHandler;
+    // Sin @InjectMocks: la política es un record y el mock maker por subclases no puede espiarlo.
+    private final OrderPaymentPolicy paymentPolicy = new OrderPaymentPolicy(Duration.ofMinutes(15), 2);
+    private CreateOrderHandler createOrderHandler;
 
     private User user;
     private Store store;
@@ -52,6 +56,10 @@ class CreateOrderHandlerTest {
 
     @BeforeEach
     void setUp() {
+        createOrderHandler = new CreateOrderHandler(orderRepositoryPort, productRepositoryPort,
+                userRepositoryPort, storeRepositoryPort, aulaRepositoryPort, metricsPort,
+                secureRandomPort, paymentPolicy);
+
         user = User.builder()
                 .id(1L).email("xavier@nomi.com")
                 .role(UserRole.ESTUDIANTE).activo(true)
@@ -165,5 +173,71 @@ class CreateOrderHandlerTest {
                         null
                 ))
         );
+    }
+
+    private void stubValidParticipants() {
+        when(userRepositoryPort.findById(1L)).thenReturn(Optional.of(user));
+        when(storeRepositoryPort.findById(1L)).thenReturn(Optional.of(store));
+        when(aulaRepositoryPort.findById(1L)).thenReturn(Optional.of(
+                com.nomi.backend.domain.model.aula.Aula.builder()
+                        .id(1L).codigo("A-101").nombre("Aula 101").activo(true).build()
+        ));
+    }
+
+    private Order pendingOrder(long id, LocalDateTime pagoExpiraEn) {
+        return Order.builder().id(id).userId(1L).status(OrderStatus.PENDIENTE).pagoExpiraEn(pagoExpiraEn).build();
+    }
+
+    @Test
+    @DisplayName("El pedido nuevo vence según el plazo de pago")
+    void crear_orden_fija_plazo_de_pago() {
+        stubValidParticipants();
+        when(productRepositoryPort.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.decrementStock(anyLong(), anyInt())).thenReturn(1);
+        when(orderRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(secureRandomPort.generateConfirmationCode(anyInt())).thenReturn("1234");
+
+        LocalDateTime before = LocalDateTime.now();
+        Order result = createOrderHandler.execute(buildCommand(
+                1L, 1L, 1L, List.of(new CreateOrderUseCase.OrderItemCommand(1L, 1)), null));
+
+        assertNotNull(result.getPagoExpiraEn());
+        assertFalse(result.getPagoExpiraEn().isBefore(before.plusMinutes(15)));
+        assertFalse(result.getPagoExpiraEn().isAfter(LocalDateTime.now().plusMinutes(15)));
+    }
+
+    @Test
+    @DisplayName("No deja crear otro pedido con el máximo de pedidos sin pagar, y no toca el stock")
+    void crear_orden_falla_con_demasiados_pedidos_sin_pagar() {
+        stubValidParticipants();
+        LocalDateTime later = LocalDateTime.now().plusMinutes(10);
+        when(orderRepositoryPort.findByUserIdAndStatus(1L, OrderStatus.PENDIENTE))
+                .thenReturn(List.of(pendingOrder(10L, later), pendingOrder(11L, later)));
+
+        IllegalStateException error = assertThrows(IllegalStateException.class, () ->
+                createOrderHandler.execute(buildCommand(
+                        1L, 1L, 1L, List.of(new CreateOrderUseCase.OrderItemCommand(1L, 1)), null)));
+
+        assertTrue(error.getMessage().contains("2 pedidos sin pagar"));
+        verify(productRepositoryPort, never()).decrementStock(anyLong(), anyInt());
+        verify(orderRepositoryPort, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Los pedidos sin pagar ya vencidos no cuentan para el límite")
+    void crear_orden_ignora_pedidos_vencidos_en_el_limite() {
+        stubValidParticipants();
+        LocalDateTime expired = LocalDateTime.now().minusMinutes(1);
+        when(orderRepositoryPort.findByUserIdAndStatus(1L, OrderStatus.PENDIENTE))
+                .thenReturn(List.of(pendingOrder(10L, expired), pendingOrder(11L, expired)));
+        when(productRepositoryPort.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.decrementStock(anyLong(), anyInt())).thenReturn(1);
+        when(orderRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(secureRandomPort.generateConfirmationCode(anyInt())).thenReturn("1234");
+
+        Order result = createOrderHandler.execute(buildCommand(
+                1L, 1L, 1L, List.of(new CreateOrderUseCase.OrderItemCommand(1L, 1)), null));
+
+        assertEquals(OrderStatus.PENDIENTE, result.getStatus());
     }
 }

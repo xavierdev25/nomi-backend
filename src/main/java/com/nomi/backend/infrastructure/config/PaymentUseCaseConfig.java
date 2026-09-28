@@ -17,18 +17,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PaymentUseCaseConfig {
 
+    /**
+     * {@code MERCADOPAGO_NOTIFICATION_URL} solo se usa como URL de retorno tras pagar (hoy la del
+     * webhook, ver la auditoría técnica, M8). Los avisos de pago se configuran en el panel de
+     * MercadoPago de cada entorno, no en el checkout.
+     */
     @Bean
     public CreatePaymentUseCase createPaymentUseCase(PaymentRepositoryPort paymentRepositoryPort,
                                                      PaymentGatewayPort paymentGatewayPort,
                                                      OrderRepositoryPort orderRepositoryPort,
                                                      UserRepositoryPort userRepositoryPort,
-                                                     @Value("${mercadopago.notification-url:http://localhost:8080/api/payments/webhook}") String notificationUrl) {
+                                                     @Value("${mercadopago.notification-url:http://localhost:8080/api/payments/webhook}") String returnUrl) {
         return new CreatePaymentHandler(
                 paymentRepositoryPort,
                 paymentGatewayPort,
                 orderRepositoryPort,
                 userRepositoryPort,
-                notificationUrl
+                returnUrl
         );
     }
 }

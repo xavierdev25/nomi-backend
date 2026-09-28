@@ -20,6 +20,16 @@ Configuración en `src/test/resources/application-test.yaml` (sin caché, sin Do
 local, si tu PostgreSQL de desarrollo está en otro puerto, levanta uno desechable en el 5432 para
 los tests. Testcontainers está en el `pom.xml` pero aún no se usa (auditoría M11).
 
+Para no ensuciar la base de desarrollo, usa un PostgreSQL desechable en otro puerto y apunta los
+tests con `SPRING_DATASOURCE_URL`:
+
+```bash
+docker run --rm -d --name nomi-test-pg -p 55432:5432 -e POSTGRES_DB=nomi_db \
+  -e POSTGRES_USER=nomi_user -e POSTGRES_PASSWORD="$DB_PASSWORD" postgres:16-alpine
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:55432/nomi_db ./mvnw test
+docker stop nomi-test-pg
+```
+
 ## 2. Tipos de test
 
 | Tipo | Herramientas | Ejemplo |
@@ -31,29 +41,41 @@ los tests. Testcontainers está en el `pom.xml` pero aún no se usa (auditoría 
 | Integración con BD | `@SpringBootTest` + perfil `test` + `@Sql` | `ProductRepositoryIntegrationTest` |
 | Configuración | JUnit 5 con rutas temporales | `DotenvEnvironmentPostProcessorTest` |
 
-## 3. Cobertura actual (68 tests)
+## 3. Cobertura actual (169 tests)
 
 | Suite | Tests | Cubre |
 |---|---:|---|
-| `OrderDomainServiceTest` | 12 | Máquina de estados |
+| `OrderPaymentSettlementTest` | 21 | Pago aprobado → preparación; pedido ya cancelado o pago duplicado → reembolso; aviso repetido sin efecto; registro antiguo sin id de pago; un rechazo no cancela; si el reembolso falla no se guarda nada; un pago de otro checkout (referencia, monto o fecha anterior) no confirma ni se reembolsa |
+| `OrderDomainServiceTest` | 13 | Máquina de estados; la transición conserva el plazo de pago |
+| `MercadoPagoAdapterTest` | 15 | Estados de MercadoPago → estados de pago (solo `approved` confirma); consulta de búsqueda válida; el checkout vence con el pedido, excluye medios diferidos y no lleva `notification_url` |
+| `CheckoutReferenceTest` | 3 | Referencia única por checkout; pedido desde referencias nuevas y antiguas |
+| `ReconcilePendingOrdersHandlerTest` | 8 | Qué pedidos se revisan; vencido pero pagado se confirma; vencido sin pago caduca y devuelve stock; MercadoPago caído no cancela; carrera con el webhook |
+| `OrderPaymentPolicyTest` | 7 | Plazo para pagar, límite de pedidos sin pagar, vencimiento exacto y segundos restantes |
+| `PaymentTest` | 8 | Un aviso tardío de otro intento no pisa un pago aprobado; idempotencia; el reembolso es final; referencia de búsqueda |
+| `CreateOrderHandlerTest` | 7 | Cálculo del total, usuario inexistente, tienda inactiva, stock insuficiente, plazo de pago, límite de pedidos sin pagar (sin tocar el stock) y los vencidos no cuentan |
+| `CancelOrderHandlerTest` | 7 | Sin checkout; con checkout sin pagar (y lo cierra); si cerrar falla, cancela igual; ya pagado → confirma y `409`; MercadoPago caído → no cancela; carrera con el webhook → no devuelve stock |
+| `RefundLatePaymentsHandlerTest` | 5 | Reembolsa el pago aprobado de un pedido cancelado; sin pago aprobado, pedido no cancelado o pago ajeno → nada |
+| `CreatePaymentHandlerTest` | 6 | Monto del servidor y checkout que vence con el pedido; pedido no pendiente, vencido o ajeno; segundo checkout |
+| `ProcessWebhookHandlerTest` | 6 | Aprobado → liquida; no aprobado → solo registra; MercadoPago caído → error; referencia ajena; pago desconocido (aviso de prueba) → se ignora |
+| `UpdateOrderStatusHandlerTest` | 4 | No saca un pedido de `PENDIENTE` (ni a preparación ni a cancelado); avance normal |
+| `OrderRepositoryIntegrationTest` | 5 | Pagar y cancelar condicionales contra PostgreSQL: solo gana el primero; pedidos cancelados recientes con checkout abierto |
 | `OrderControllerTest` | 6 | Crear pedido por rol, ownership, 401 sin token o con token inválido |
 | `AuthControllerTest` | 6 | Registro, validación (incluida una restricción no admitida), login, credenciales incorrectas, logout |
 | `DietaryRestrictionTest` | 6 | Cumplimiento de restricciones con las etiquetas del producto (vegano ⇒ vegetariano y sin lactosa), restricciones desconocidas |
 | `GetRecommendationsHandlerTest` | 4 | Solo candidatos aptos llegan a la IA; sin candidatos o con restricción desconocida no se llama; presupuesto sin `:` |
 | `RecommendationCandidatesTest` | 4 | Filtros de restricciones, stock, tienda activa y "no me gusta"; los más pedidos primero y tope de 40 |
 | `LoginHandlerTest` | 5 | Login correcto, usuario inexistente o inactivo, contraseña incorrecta, bloqueo |
-| `CreateOrderHandlerTest` | 4 | Cálculo del total, usuario inexistente, tienda inactiva, stock insuficiente |
 | `DotenvEnvironmentPostProcessorTest` | 4 | Carga del `.env` y prioridad frente al entorno |
 | `ProductRepositoryIntegrationTest` | 4 | Consultas de productos |
-| `PaymentControllerTest` | 3 | Webhook: firma válida, inválida y payload incompleto |
+| `PaymentControllerTest` | 5 | Webhook: firma válida e inválida, formato actual (`type=payment`) y antiguo (`topic`), eventos que no son de pago ignorados, sin tipo de evento → 400 |
 | `CreateUserHandlerTest` | 3 | Alta de usuarios |
 | `UserRepositoryIntegrationTest` | 3 | Consultas de usuarios |
 | `AiServiceAdapterTest` | 3 | Circuit breaker abierto → degradación sin llamar al servicio; los `4xx` no abren el circuito; cabecera `X-Nomi-User-Id` |
 | `BackendApplicationTests` | 1 | Arranque del contexto |
 
-**Sin cubrir** (prioridad alta, ver auditoría M11): `ProcessWebhookHandler` por cada estado de
-MercadoPago, `CreatePaymentHandler`, cancelación, rotación de refresh tokens, ownership de
-tiendas y productos, favoritos y calificaciones.
+**Sin cubrir** (ver auditoría M11): rotación de refresh tokens, ownership de tiendas y
+productos, favoritos y calificaciones. El ciclo de pago está probado con MercadoPago simulado;
+falta probarlo contra el sandbox real.
 
 ## 4. Cómo escribir un test
 

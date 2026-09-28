@@ -137,9 +137,10 @@ public class PaymentController {
     })
     /**
      * Webhook de MercadoPago. Público, pero solo se procesa si la firma {@code x-signature} es
-     * válida. Las notificaciones {@code merchant_order} se ignoran; las de pago se procesan con
-     * {@code ProcessWebhookUseCase}. Un error de procesamiento responde 500 para que MercadoPago
-     * reintente.
+     * válida. Solo se procesan los eventos de pago: {@code type=payment} en los webhooks, o
+     * {@code topic=payment} en el formato IPN antiguo. El resto ({@code merchant_order}, etc.) se
+     * confirma con 200 sin procesar, para que MercadoPago no lo reenvíe. Un error de procesamiento
+     * responde 500 para que MercadoPago reintente.
      */
     @PostMapping("/webhook")
     public ResponseEntity<Void> webhook(
@@ -152,6 +153,7 @@ public class PaymentController {
         String signedDataId = dataId != null ? dataId : idParam;
         String externalId = signedDataId;
         String action = null;
+        String bodyType = null;
         try {
             Map<String, Object> payload = OBJECT_MAPPER.readValue(rawBody, new TypeReference<>() {});
             Object dataObj = payload.get("data");
@@ -161,6 +163,8 @@ public class PaymentController {
             }
             Object actionObj = payload.get("action");
             if (actionObj != null) action = actionObj.toString();
+            Object typeObj = payload.get("type");
+            if (typeObj != null) bodyType = typeObj.toString();
         } catch (Exception e) {
             log.warn("Webhook MercadoPago: payload inválido. {}", e.getMessage());
             return ResponseEntity.badRequest().build();
@@ -181,14 +185,13 @@ public class PaymentController {
             return ResponseEntity.badRequest().build();
         }
 
-        String topic = request.getParameter("topic");
-        String type = request.getParameter("type");
-        if (topic == null || topic.isBlank()) {
-            log.warn("Webhook MercadoPago: topic ausente.");
+        String eventType = firstNonBlank(request.getParameter("type"), request.getParameter("topic"), bodyType);
+        if (eventType == null) {
+            log.warn("Webhook MercadoPago: tipo de evento ausente.");
             return ResponseEntity.badRequest().build();
         }
-        if ("merchant_order".equals(topic)) {
-            log.info("Webhook merchant_order ignorado. id={}, type={}", externalId, type);
+        if (!"payment".equals(eventType)) {
+            log.info("Webhook MercadoPago: evento {} ignorado. id={}", eventType, externalId);
             return ResponseEntity.ok().build();
         }
 
@@ -201,6 +204,15 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
     }
 
     private void ensureOwnerOrAdmin(Long ownerUserId) {

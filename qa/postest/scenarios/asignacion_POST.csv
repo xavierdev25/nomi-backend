@@ -1,0 +1,31 @@
+scenario_id,jornada,time_slot,time_window,participant_id,test_user,restrictions,budget_range,consigna,ai_instructed,aula_id,aula_name,meeting_point,meeting_point_label,payment_card_type,payment_card_holder
+POST-001,J1,desayuno,09:00-10:30,PA01,est01.postest@nomi.test,—,MEDIO,Desayuno: 1 bebida caliente + 1 pan o sándwich,no,A-101,Aula 101 – Pabellón A (prueba),puerta,La puerta del salón,Visa crédito,APRO
+POST-002,J1,desayuno,09:00-10:30,PA02,est02.postest@nomi.test,VEGETARIANO,MEDIO,1 producto recomendado por Nomi,si,B-201,Aula 201 – Pabellón B (prueba),pasillo,El pasillo,Mastercard crédito,APRO
+POST-003,J1,desayuno,09:00-10:30,PA03,est03.postest@nomi.test,SIN_GLUTEN,MEDIO,2 unidades de una bebida apta para ti,no,LAB-1,Laboratorio de Cómputo 1 (prueba),entrada,La entrada del edificio,Mastercard débito,APRO
+POST-004,J1,desayuno,09:00-10:30,PA04,est04.postest@nomi.test,—,BAJO,"1 snack + 1 bebida, total hasta S/ 5.00",no,A-102,Aula 102 – Pabellón A (prueba),escaleras,Las escaleras,Visa crédito,APRO
+POST-005,J1,desayuno,09:00-10:30,PA05,est05.postest@nomi.test,VEGANO,MEDIO,Desayuno vegano: 1 bebida + 1 comida,no,TAL-1,Taller de Electrónica (prueba),recepcion,Recepción,Mastercard crédito,APRO
+POST-006,J1,desayuno,09:00-10:30,PA06,est06.postest@nomi.test,—,ALTO,"Desayuno para dos: 2 productos recomendados por Nomi, 2 unidades de cada uno",si,B-202,Aula 202 – Pabellón B (prueba),puerta,La puerta del salón,Mastercard débito,APRO
+POST-007,J1,desayuno,09:00-10:30,PA07,est07.postest@nomi.test,SIN_LACTOSA,MEDIO,1 comida + 1 bebida sin lactosa,no,A-101,Aula 101 – Pabellón A (prueba),pasillo,El pasillo,Visa crédito,APRO
+POST-008,J1,desayuno,09:00-10:30,PA08,est08.postest@nomi.test,VEGETARIANO; SIN_GLUTEN,MEDIO,1 producto recomendado por Nomi,si,B-201,Aula 201 – Pabellón B (prueba),entrada,La entrada del edificio,Mastercard crédito,APRO
+POST-009,J1,desayuno,09:00-10:30,PA09,est09.postest@nomi.test,—,MEDIO,2 bebidas distintas + 1 postre,no,LAB-1,Laboratorio de Cómputo 1 (prueba),escaleras,Las escaleras,Mastercard débito,APRO
+POST-010,J1,desayuno,09:00-10:30,PA10,est10.postest@nomi.test,—,BAJO,1 comida de hasta S/ 5.00,no,A-102,Aula 102 – Pabellón A (prueba),recepcion,Recepción,Visa crédito,APRO
+POST-011,J2,almuerzo,12:00-14:00,PA11,est11.postest@nomi.test,—,MEDIO,1 plato de fondo + 1 bebida,no,B-202,Aula 202 – Pabellón B (prueba),pasillo,El pasillo,Mastercard crédito,APRO
+POST-012,J2,almuerzo,12:00-14:00,PA12,est12.postest@nomi.test,VEGETARIANO,MEDIO,Almuerzo vegetariano: 1 plato recomendado por Nomi + 1 bebida,si,A-101,Aula 101 – Pabellón A (prueba),entrada,La entrada del edificio,Mastercard débito,APRO
+POST-013,J2,almuerzo,12:00-14:00,PA13,est13.postest@nomi.test,—,ALTO,1 plato de fondo + 1 gaseosa u otra bebida,no,B-201,Aula 201 – Pabellón B (prueba),escaleras,Las escaleras,Visa crédito,APRO
+POST-014,J2,almuerzo,12:00-14:00,PA14,est14.postest@nomi.test,SIN_GLUTEN,MEDIO,1 plato sin gluten recomendado por Nomi,si,LAB-1,Laboratorio de Cómputo 1 (prueba),recepcion,Recepción,Mastercard crédito,APRO
+POST-015,J2,almuerzo,12:00-14:00,PA15,est15.postest@nomi.test,—,BAJO,2 unidades de un plato de hasta S/ 6.00 cada uno,no,TAL-1,Taller de Electrónica (prueba),puerta,La puerta del salón,Mastercard débito,APRO
+POST-016,J2,almuerzo,12:00-14:00,PA16,est16.postest@nomi.test,VEGANO,MEDIO,1 plato + 1 postre veganos,no,A-102,Aula 102 – Pabellón A (prueba),pasillo,El pasillo,Visa crédito,APRO
+POST-017,J2,almuerzo,12:00-14:00,PA17,est17.postest@nomi.test,SIN_LACTOSA,MEDIO,1 plato recomendado por Nomi + 1 bebida,si,B-202,Aula 202 – Pabellón B (prueba),entrada,La entrada del edificio,Mastercard crédito,APRO
+POST-018,J2,almuerzo,12:00-14:00,PA18,est18.postest@nomi.test,—,ALTO,"Almuerzo para dos: 2 platos, iguales o distintos",no,A-101,Aula 101 – Pabellón A (prueba),escaleras,Las escaleras,Mastercard débito,APRO
+POST-019,J2,almuerzo,12:00-14:00,PA19,est19.postest@nomi.test,VEGETARIANO; SIN_GLUTEN,MEDIO,1 plato apto para ti,no,B-201,Aula 201 – Pabellón B (prueba),recepcion,Recepción,Visa crédito,APRO
+POST-020,J2,almuerzo,12:00-14:00,PA20,est20.postest@nomi.test,—,MEDIO,Almuerzo completo: 1 producto recomendado por Nomi + 1 bebida + 1 postre,si,LAB-1,Laboratorio de Cómputo 1 (prueba),puerta,La puerta del salón,Mastercard crédito,APRO
+POST-021,J3,tarde,16:00-17:30,PA21,est21.postest@nomi.test,—,BAJO,1 snack,no,TAL-1,Taller de Electrónica (prueba),pasillo,El pasillo,Mastercard débito,APRO
+POST-022,J3,tarde,16:00-17:30,PA22,est22.postest@nomi.test,VEGETARIANO,MEDIO,1 snack + 1 bebida vegetarianos,no,A-102,Aula 102 – Pabellón A (prueba),entrada,La entrada del edificio,Visa crédito,APRO
+POST-023,J3,tarde,16:00-17:30,PA23,est23.postest@nomi.test,—,ALTO,"3 unidades de una bebida recomendada por Nomi, para compartir",si,B-202,Aula 202 – Pabellón B (prueba),escaleras,Las escaleras,Mastercard crédito,APRO
+POST-024,J3,tarde,16:00-17:30,PA24,est24.postest@nomi.test,SIN_GLUTEN,MEDIO,1 snack + 1 bebida sin gluten,no,A-101,Aula 101 – Pabellón A (prueba),recepcion,Recepción,Mastercard débito,APRO
+POST-025,J3,tarde,16:00-17:30,PA25,est25.postest@nomi.test,VEGANO,MEDIO,1 producto recomendado por Nomi,si,B-201,Aula 201 – Pabellón B (prueba),puerta,La puerta del salón,Visa crédito,APRO
+POST-026,J3,tarde,16:00-17:30,PA26,est26.postest@nomi.test,—,MEDIO,1 bebida + 1 postre,no,LAB-1,Laboratorio de Cómputo 1 (prueba),pasillo,El pasillo,Mastercard crédito,APRO
+POST-027,J3,tarde,16:00-17:30,PA27,est27.postest@nomi.test,SIN_LACTOSA,MEDIO,1 postre sin lactosa + 1 bebida,no,TAL-1,Taller de Electrónica (prueba),entrada,La entrada del edificio,Mastercard débito,APRO
+POST-028,J3,tarde,16:00-17:30,PA28,est28.postest@nomi.test,VEGETARIANO; SIN_GLUTEN,MEDIO,2 productos recomendados por Nomi,si,A-102,Aula 102 – Pabellón A (prueba),escaleras,Las escaleras,Visa crédito,APRO
+POST-029,J3,tarde,16:00-17:30,PA29,est29.postest@nomi.test,—,BAJO,1 comida de hasta S/ 6.00,no,B-202,Aula 202 – Pabellón B (prueba),recepcion,Recepción,Mastercard crédito,APRO
+POST-030,J3,tarde,16:00-17:30,PA30,est30.postest@nomi.test,—,ALTO,"Pedido para el grupo: 3 productos distintos, 2 unidades de uno de ellos",no,A-101,Aula 101 – Pabellón A (prueba),puerta,La puerta del salón,Mastercard débito,APRO

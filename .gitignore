@@ -55,3 +55,13 @@ google-services.json
 
 .agents
 skills-lock.json
+
+# Postest (qa/postest): credenciales de las cuentas sintéticas, estado de ejecución y ensayos técnicos
+qa/postest/.secrets/
+qa/postest/runtime/
+qa/postest/results/ensayos/
+qa/postest/results/respaldos/
+__pycache__/
+
+# Metadatos de macOS
+.DS_Store

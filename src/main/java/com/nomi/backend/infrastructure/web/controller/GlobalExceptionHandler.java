@@ -2,6 +2,7 @@ package com.nomi.backend.infrastructure.web.controller;
 
 import com.nomi.backend.domain.exception.AuthorizationException;
 import com.nomi.backend.domain.exception.AuthenticationFailedException;
+import com.nomi.backend.domain.exception.PaymentGatewayUnavailableException;
 import com.nomi.backend.domain.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,7 +28,8 @@ import java.util.Map;
  *
  * <p>{@code IllegalArgumentException} → 400, {@code IllegalStateException} → 409,
  * {@code ResourceNotFoundException} → 404, {@code AuthorizationException} y
- * {@code AccessDeniedException} → 403, y cualquier otra → 500 con mensaje genérico.
+ * {@code AccessDeniedException} → 403, {@code PaymentGatewayUnavailableException} → 503, y
+ * cualquier otra → 500 con mensaje genérico.
  */
 @Slf4j
 @RestControllerAdvice
@@ -63,6 +65,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
         log.warn("Estado inválido: {}", ex.getMessage());
         return build(HttpStatus.CONFLICT, "Conflicto", safeMessage(ex, "Operación no permitida en este estado"));
+    }
+
+    /**
+     * 503 y no 500: es transitorio y el cliente debe reintentar. En el webhook, cualquier respuesta
+     * que no sea 2xx hace que MercadoPago reenvíe la notificación.
+     */
+    @ExceptionHandler(PaymentGatewayUnavailableException.class)
+    public ResponseEntity<Map<String, Object>> handlePaymentGatewayUnavailable(PaymentGatewayUnavailableException ex) {
+        log.warn("MercadoPago no disponible: {}", ex.getMessage());
+        return build(HttpStatus.SERVICE_UNAVAILABLE, "Pagos no disponibles",
+                "No pudimos confirmar el estado de tu pago. Inténtalo en unos segundos.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -19,6 +19,11 @@ import java.time.LocalDateTime;
  * Avanza el estado de un pedido, registra el cambio en el historial y publica
  * {@link OrderStatusChangedEvent}.
  *
+ * <p>Los dos cambios que salen de {@code PENDIENTE} no pasan por aquí: el pedido pasa a
+ * preparación solo cuando MercadoPago aprueba el pago (webhook o conciliación), y se cancela con
+ * {@code PATCH /orders/{id}/cancel}, que comprueba el pago y devuelve el stock. Si no, una tienda
+ * podría preparar un pedido sin cobrar o cancelarlo sin devolver el stock.
+ *
  * <p>Hoy ningún componente escucha ese evento, así que los cambios de estado no generan
  * notificaciones. Tampoco se verifica el código de confirmación al marcar {@code ENTREGADO}.
  */
@@ -38,6 +43,13 @@ public class UpdateOrderStatusHandler implements UpdateOrderStatusUseCase {
         Order existing = orderRepositoryPort.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada"));
 
+        if (newStatus == OrderStatus.CANCELADO) {
+            throw new IllegalStateException("Para cancelar un pedido usa PATCH /orders/{id}/cancel");
+        }
+        if (existing.getStatus() == OrderStatus.PENDIENTE && newStatus == OrderStatus.PREPARANDO) {
+            throw new IllegalStateException("Un pedido pasa a preparación cuando se aprueba su pago");
+        }
+
         Order updatedOrderModel = orderDomainService.applyStatusTransition(existing, newStatus);
         Order updatedOrder = orderRepositoryPort.save(updatedOrderModel);
 
@@ -46,8 +58,6 @@ public class UpdateOrderStatusHandler implements UpdateOrderStatusUseCase {
 
         if (newStatus == OrderStatus.ENTREGADO) {
             metricsPort.recordOrderCompleted();
-        } else if (newStatus == OrderStatus.CANCELADO) {
-            metricsPort.recordOrderCancelled();
         }
 
         eventPublisher.publishEvent(new OrderStatusChangedEvent(

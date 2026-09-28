@@ -39,6 +39,12 @@ public class PaymentEntity {
     @Column(name = "external_id")
     private String externalId;
 
+    @Column(name = "external_reference", length = 80)
+    private String externalReference;
+
+    @Column(name = "gateway_payment_id", length = 40)
+    private String gatewayPaymentId;
+
     @Column(name = "payment_url", length = 500)
     private String paymentUrl;
 

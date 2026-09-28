@@ -3,6 +3,7 @@ package com.nomi.backend.application.order;
 import com.nomi.backend.domain.exception.ResourceNotFoundException;
 import com.nomi.backend.domain.model.order.Order;
 import com.nomi.backend.domain.model.order.OrderItem;
+import com.nomi.backend.domain.model.order.OrderPaymentPolicy;
 import com.nomi.backend.domain.model.order.OrderStatus;
 import com.nomi.backend.domain.model.product.Product;
 import com.nomi.backend.domain.model.store.Store;
@@ -32,6 +33,10 @@ import java.util.Map;
  * disponibles y con stock. El stock se reserva al crear el pedido, antes de pagar. Importes:
  * {@code total} = subtotal de productos; propina de 0 al 50 % del subtotal; tarifa de servicio
  * y comisión fijas.
+ *
+ * <p>Como el stock queda reservado, el pedido tiene un plazo para pagarse
+ * ({@link OrderPaymentPolicy}): si vence sin pago se cancela y el stock se libera. Además, un
+ * estudiante no puede acumular más de {@code maxPendingPerUser} pedidos sin pagar.
  */
 @Service
 @RequiredArgsConstructor
@@ -48,11 +53,13 @@ public class CreateOrderHandler implements CreateOrderUseCase {
     private final AulaRepositoryPort aulaRepositoryPort;
     private final BusinessMetricsPort metricsPort;
     private final SecureRandomPort secureRandomPort;
+    private final OrderPaymentPolicy paymentPolicy;
 
     @Override
     @Transactional
     public Order execute(CreateOrderCommand command) {
         Store store = validateParticipants(command);
+        ensureCanHoldAnotherPendingOrder(command.userId());
         List<OrderItem> orderItems = buildAndValidateItems(command, store);
         Money totals = calculateTotals(orderItems, command.propina());
         Order savedOrder = orderRepositoryPort.save(buildOrder(command, orderItems, totals));
@@ -149,7 +156,16 @@ public class CreateOrderHandler implements CreateOrderUseCase {
         return new Money(totalProductos, propina, TARIFA_SERVICIO, COMISION_NOMI);
     }
 
+    private void ensureCanHoldAnotherPendingOrder(Long userId) {
+        List<Order> pending = orderRepositoryPort.findByUserIdAndStatus(userId, OrderStatus.PENDIENTE);
+        if (!paymentPolicy.allowsAnotherPending(pending, LocalDateTime.now())) {
+            throw new IllegalStateException("Tienes " + paymentPolicy.maxPendingPerUser()
+                    + " pedidos sin pagar. Págalos o cancélalos antes de hacer otro.");
+        }
+    }
+
     private Order buildOrder(CreateOrderCommand command, List<OrderItem> orderItems, Money totals) {
+        LocalDateTime now = LocalDateTime.now();
         return Order.builder()
                 .userId(command.userId())
                 .storeId(command.storeId())
@@ -162,8 +178,9 @@ public class CreateOrderHandler implements CreateOrderUseCase {
                 .codigoConfirmacion(secureRandomPort.generateConfirmationCode(4))
                 .status(OrderStatus.PENDIENTE)
                 .notas(command.notas())
-                .creadoEn(LocalDateTime.now())
-                .actualizadoEn(LocalDateTime.now())
+                .creadoEn(now)
+                .actualizadoEn(now)
+                .pagoExpiraEn(paymentPolicy.deadlineFrom(now))
                 .build();
     }
 

@@ -6,6 +6,23 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
 ## [No publicado]
 
 ### Añadido
+- **Caducidad de pedidos sin pagar** (migración V24): un pedido `PENDIENTE` vence a los 15
+  minutos (`ORDER_PAYMENT_WINDOW_MINUTES`) y se cancela solo, devolviendo el stock. Cada
+  estudiante puede tener como mucho 2 sin pagar (`ORDER_MAX_PENDING_PER_USER`); el tercero
+  responde `409`. `OrderResponse` incluye `pagoExpiraEn` y `segundosParaPagar`.
+- **Conciliación con MercadoPago** cada minuto (`ORDER_RECONCILE_INTERVAL_MS`): confirma los
+  pedidos pagados cuyo webhook no llegó y cancela los vencidos, siempre tras consultar el pago.
+- **Reembolsos automáticos** de un pago aprobado para un pedido ya cancelado y de un segundo pago
+  aprobado del mismo pedido. `payments.gateway_payment_id` guarda el pago que decidió el estado.
+- El checkout de MercadoPago vence con el pedido y no ofrece medios diferidos (`ticket`, `atm`).
+- `503 Pagos no disponibles` cuando MercadoPago no responde a una consulta.
+- Referencia única por checkout en MercadoPago (`nomi-<pedido>-<uuid>`, migración V25).
+- **Cancelar un pedido cierra su checkout** en MercadoPago, y una revisión cada 10 minutos
+  (`ORDER_LATE_PAYMENT_CHECK_INTERVAL_MS`) **reembolsa los pagos aprobados de pedidos cancelados**
+  en las últimas 72 h (`ORDER_LATE_PAYMENT_WINDOW_HOURS`), sin depender del webhook.
+- Los errores de la API de MercadoPago se registran con su código y su cuerpo.
+- 101 tests de pagos, webhook, cancelación, caducidad y actualizaciones condicionales (169 en
+  total).
 - Etiquetas dietéticas en los productos (`etiquetasDieteticas`, migración V22): restricciones
   para las que el comercio declara apto cada producto, con `CHECK` de valores válidos.
 - Recomendaciones en dos etapas: el backend elige los candidatos de forma determinista
@@ -18,9 +35,12 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
 - Javadoc en español de todo el código de producción.
 - Documentación del repositorio: README, AGENTS y `docs/`.
 - Tests: carga del `.env`, respuestas `401`, restricciones, selección de candidatos, handler de
-  recomendaciones, circuit breaker con `4xx` y registro con restricción no válida (68 en total).
+  recomendaciones, circuit breaker con `4xx` y registro con restricción no válida.
 
 ### Cambiado
+- **El checkout ya no envía `notification_url`.** MercadoPago firma esos avisos con una clave
+  distinta de la del panel y nunca pasaban la verificación. El webhook se da de alta en el panel
+  de MercadoPago de cada entorno; `MERCADOPAGO_NOTIFICATION_URL` queda solo como URL de retorno.
 - **La marca es Nomi en todo el sistema.** Paquete Java `com.nomi.backend` y `groupId`
   `com.nomi`; nombre de la aplicación y emisor JWT por defecto `nomi-backend`; base de datos y
   usuario por defecto `nomi_db` / `nomi_user`; contenedores `nomi-postgres`, `nomi-redis` y
@@ -36,6 +56,27 @@ siguen [SemVer](https://semver.org/lang/es/). Los cambios nuevos van en **No pub
   registra como error con el código y el inicio del cuerpo.
 
 ### Corregido
+- **El webhook cancelaba pedidos con pago pendiente, en revisión o cuya consulta fallaba**
+  (auditoría C1). Ahora solo un pago aprobado cambia el pedido, un rechazo lo deja abierto para
+  reintentar y un fallo de consulta responde error para que MercadoPago reenvíe.
+- **Se podía cancelar un pedido ya pagado sin reembolso** (A3). La cancelación consulta
+  MercadoPago: con un pago aprobado confirma el pedido y responde `409`.
+- **Un pedido sin pagar retenía el stock para siempre** (A2): ver caducidad.
+- `PATCH /orders/{id}/status` dejaba pasar un pedido `PENDIENTE` a `PREPARANDO` sin cobrar, o a
+  `CANCELADO` sin devolver el stock. Ahora responde `409`: lo primero lo hace el pago aprobado y lo
+  segundo `/cancel`.
+- `POST /payments` creaba un checkout para pedidos cancelados o vencidos.
+- **Un pago antiguo podía dar por pagado un pedido nuevo** (hallado con el sandbox real): la
+  referencia del checkout era el id del pedido, que se repite entre bases de datos y entornos.
+  Ahora es única y un pago solo cuenta si coinciden referencia y monto (y, en checkouts antiguos,
+  si no es anterior al checkout); un pago ajeno tampoco se reembolsa como duplicado.
+- La búsqueda de pagos de un checkout fallaba siempre: el SDK de MercadoPago necesita `offset`.
+- **El webhook rechazaba (`400`) todas las notificaciones actuales de MercadoPago**: exigía
+  `topic`, que solo envía el formato IPN antiguo, y los webhooks firmados usan `type=payment`. Se
+  aceptan ambos y se ignoran los eventos que no son de pago. Un pago que MercadoPago no conoce
+  (el aviso de prueba del panel) responde `200` en vez de reintentarse para siempre.
+- El paso a preparación y la cancelación son actualizaciones condicionales: webhook, cancelación y
+  caducidad simultáneos ya no pueden cobrar sin entregar ni devolver el stock dos veces.
 - **Seguridad de dependencias** (el paso *Security scan* de la CI fallaba con 7 CVE CRITICAL y 37
   HIGH; Trivy da ahora 0): Spring Boot 4.0.6 → 4.0.8, Tomcat 11.0.26, HttpClient 5.6.4 /
   HttpCore 5.4.3, `firebase-admin` 9.4.2 → 9.11.0 (gRPC 1.83), y exclusión de las dependencias

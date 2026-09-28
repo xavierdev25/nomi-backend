@@ -40,6 +40,7 @@ public class OrderDomainService {
                 .canceladoPor(order.getCanceladoPor())
                 .codigoConfirmacion(order.getCodigoConfirmacion())
                 .fotoEntregaUrl(order.getFotoEntregaUrl())
+                .pagoExpiraEn(order.getPagoExpiraEn())
                 .creadoEn(order.getCreadoEn())
                 .actualizadoEn(LocalDateTime.now())
                 .build();

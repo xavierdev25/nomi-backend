@@ -224,7 +224,9 @@ class OrderControllerTest {
                             order.getTotal(), order.getPropina(), order.getTarifaServicio(), order.getComisionNomi(),
                             order.getStatus(), order.getStatus().enEspanol(), order.getNotas(),
                             order.getMotivoCancelacion(), order.getCanceladoPor(), order.getCodigoConfirmacion(),
-                            order.getFotoEntregaUrl(), order.getCreadoEn(), order.getActualizadoEn()
+                            order.getFotoEntregaUrl(), order.getPagoExpiraEn(),
+                            order.segundosParaPagar(java.time.LocalDateTime.now()),
+                            order.getCreadoEn(), order.getActualizadoEn()
                     );
                 }
 

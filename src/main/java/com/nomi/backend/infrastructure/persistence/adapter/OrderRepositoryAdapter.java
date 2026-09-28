@@ -4,12 +4,14 @@ import com.nomi.backend.domain.common.PageQuery;
 import com.nomi.backend.domain.common.PagedResult;
 import com.nomi.backend.domain.model.order.Order;
 import com.nomi.backend.domain.model.order.OrderStatus;
+import com.nomi.backend.domain.model.payment.PaymentStatus;
 import com.nomi.backend.domain.port.out.OrderRepositoryPort;
 import com.nomi.backend.infrastructure.common.PagingMapper;
 import com.nomi.backend.infrastructure.persistence.repository.OrderJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,5 +101,22 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     @Override
     public List<Order> findByUserIdAndStatus(Long userId, OrderStatus status) {
         return jpaRepository.findByUserIdAndStatus(userId, status).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Long> findCancelledWithOpenCheckoutSince(LocalDateTime since) {
+        return jpaRepository.findIdsWithUnsettledPayment(OrderStatus.CANCELADO, since,
+                List.of(PaymentStatus.APROBADO, PaymentStatus.REEMBOLSADO));
+    }
+
+    @Override
+    public boolean markPaidIfPending(Long orderId, LocalDateTime now) {
+        return jpaRepository.updateStatusIf(orderId, OrderStatus.PENDIENTE, OrderStatus.PREPARANDO, now) == 1;
+    }
+
+    @Override
+    public boolean cancelIfPending(Long orderId, String motivo, Long canceladoPor, LocalDateTime now) {
+        return jpaRepository.cancelIf(orderId, OrderStatus.PENDIENTE, OrderStatus.CANCELADO,
+                motivo, canceladoPor, now) == 1;
     }
 }

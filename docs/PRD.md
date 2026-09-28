@@ -49,16 +49,32 @@ El contexto de producto (actores, ciclo del pedido, reglas) está en `nomi-docs`
 - **RF-14** Código de confirmación por pedido.
 - **RF-15** Máquina de estados: `PENDIENTE → PREPARANDO → LISTO_PARA_RECOGER → EN_CAMINO →
   ENTREGADO`, y `PENDIENTE → CANCELADO`. Ningún otro salto es válido.
-- **RF-16** Solo `PENDIENTE` es cancelable; cancelar devuelve el stock.
+- **RF-16** Solo `PENDIENTE` sin pago aprobado es cancelable; cancelar devuelve el stock. Si
+  MercadoPago ya aprobó el pago, el pedido pasa a `PREPARANDO` en vez de cancelarse (`409`).
 - **RF-17** El estudiante no cambia estados; tienda, repartidor y administrador sí, sobre los
-  pedidos a los que tienen acceso.
+  pedidos a los que tienen acceso y a partir de `PREPARANDO`. Nadie saca un pedido de `PENDIENTE`
+  con `PATCH /status`: lo hacen el pago aprobado y la cancelación.
 - **RF-18** Historial de cambios de estado.
+- **RF-18a** Plazo para pagar: un pedido `PENDIENTE` vence a los 15 minutos
+  (`ORDER_PAYMENT_WINDOW_MINUTES`). Vencido sin pago aprobado, se cancela ("El pago no se completó
+  a tiempo") y devuelve el stock. La respuesta incluye `pagoExpiraEn` y `segundosParaPagar`.
+- **RF-18b** Un estudiante tiene como mucho 2 pedidos sin pagar y dentro de plazo
+  (`ORDER_MAX_PENDING_PER_USER`); el tercero responde `409`.
 
 ### Pagos
-- **RF-19** Un pago por pedido, creado en MercadoPago Checkout Pro con el monto calculado en el
-  servidor.
-- **RF-20** Webhook firmado (HMAC-SHA256): pago aprobado → pedido `PREPARANDO`; rechazado →
-  pedido cancelado y stock devuelto.
+- **RF-19** Un checkout por pedido, creado en MercadoPago Checkout Pro con el monto calculado en
+  el servidor, solo para pedidos `PENDIENTE` y dentro de plazo. Vence con el pedido y excluye los
+  medios diferidos (`ticket`, `atm`).
+- **RF-20** Webhook firmado (HMAC-SHA256). El backend consulta el pago en MercadoPago (no confía
+  en el aviso): aprobado → pedido `PREPARANDO`; rechazado, pendiente o en revisión → el pedido no
+  cambia y se puede reintentar. Si la consulta falla, responde error para que MercadoPago reenvíe.
+- **RF-20a** Conciliación cada minuto (`ORDER_RECONCILE_INTERVAL_MS`): confirma pedidos pagados
+  cuyo webhook no llegó y cancela los vencidos, siempre tras consultar MercadoPago.
+- **RF-20b** Reembolso automático de un pago aprobado para un pedido ya cancelado y de un segundo
+  pago aprobado del mismo pedido. Cancelar cierra el checkout en MercadoPago, y una revisión cada
+  10 minutos (`ORDER_LATE_PAYMENT_CHECK_INTERVAL_MS`) reembolsa los pagos que se aprueben durante
+  las 72 h siguientes a la cancelación (`ORDER_LATE_PAYMENT_WINDOW_HOURS`), sin depender del
+  webhook.
 - **RF-21** Consulta del pago de un pedido y de los pagos propios.
 
 ### Favoritos, calificaciones e IA
@@ -86,12 +102,13 @@ El contexto de producto (actores, ciclo del pedido, reglas) está en `nomi-docs`
 - **RNF-04** Esquema versionado con Flyway; nada de `ddl-auto`.
 - **RNF-05** API documentada en OpenAPI; Swagger cerrado en producción.
 - **RNF-06** Métricas de negocio en Prometheus.
+- **RNF-07** Los cambios de estado que compiten (webhook, cancelación, caducidad) son
+  actualizaciones condicionales sobre `status = 'PENDIENTE'`: solo uno gana, sin cobrar sin
+  entregar ni devolver stock dos veces.
 
 ## 5. Fuera de alcance o incompleto (hoy)
 
 - Asignación de repartidor y verificación del código de confirmación al entregar.
-- Expiración de pedidos sin pagar (el stock reservado no se libera solo).
-- Reembolsos automáticos.
 - Notificación de cambios de estado (el evento se publica, pero nadie lo escucha).
 - Verificación de comercios y repartidores en el registro.
 

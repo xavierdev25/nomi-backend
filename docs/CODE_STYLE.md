@@ -61,16 +61,16 @@ Los comentarios explican **por qué**, no qué.
   parte del contrato.
 - Los DTOs se documentan con `@Schema` (descripción y ejemplo), no con Javadoc: es lo que ve
   Swagger.
-- Las limitaciones conocidas se enlazan con su ID de la auditoría (`ver la auditoría técnica, A3`).
+- Las limitaciones conocidas se enlazan con su ID de la auditoría (`ver la auditoría técnica, M4`).
 - Sin código comentado ni comentarios de historial ("antes…", "fix…").
 
 ```java
 /**
- * Cancela un pedido si su estado lo permite (solo {@code PENDIENTE}), devuelve el stock y
- * notifica al estudiante y a la tienda.
+ * Avanza el estado de un pedido, registra el cambio en el historial y publica
+ * {@link OrderStatusChangedEvent}.
  *
- * <p>No consulta el estado del pago: si MercadoPago ya aprobó el pago pero el webhook aún no
- * llegó, el pedido se cancela sin reembolso (ver la auditoría técnica, A3).
+ * <p>No verifica el código de confirmación al marcar {@code ENTREGADO}: el repartidor puede
+ * cerrar un pedido sin haberlo entregado (ver la auditoría técnica, M4).
  */
 ```
 

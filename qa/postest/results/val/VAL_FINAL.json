@@ -1,0 +1,236 @@
+{
+  "catalogo": {
+    "version": "C0",
+    "hash_catalogo": "99755133ab7de74908069ff46249f675636899ded3fa467a63257fbcfd72e08e",
+    "hash_estructura": "0830846999b71f296c07b691f9c2ce533341f960404940ff3d3ee6175a1f1eac",
+    "productos": 35,
+    "cargado_en": "2026-09-28T00:23:16.674336+00:00",
+    "uso": "prueba técnica"
+  },
+  "resumen": {
+    "PASA": 22,
+    "NO_VERIFICABLE_EN_SANDBOX": 1,
+    "FALLA": 1
+  },
+  "resultados": [
+    {
+      "id": "VAL-001",
+      "descripcion": "Cancelar un pedido pendiente",
+      "esperado": "CANCELADO, stock devuelto, checkout cerrado",
+      "resultado": "PASA",
+      "evidencia": "pedido 11: CANCELADO; stock 25→25; checkout vence 2026-09-27T21:26:49.855-05:00",
+      "ejecutada_en": "2026-09-28T02:26:48.587+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-002",
+      "descripcion": "Pedir un producto agotado",
+      "esperado": "rechazo, stock sin cambios",
+      "resultado": "PASA",
+      "evidencia": "HTTP 400; stock sigue en 0",
+      "ejecutada_en": "2026-09-28T02:26:52.672+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-003",
+      "descripcion": "Pedir más unidades que el stock",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "26 unidades → HTTP 400",
+      "ejecutada_en": "2026-09-28T02:26:53.000+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-004",
+      "descripcion": "Caducidad de un pedido sin pagar",
+      "esperado": "cancelado por el sistema, stock devuelto",
+      "resultado": "PASA",
+      "evidencia": "pedido 12 cancelado por el sistema: «El pago no se completó a tiempo»; stock 25→25",
+      "ejecutada_en": "2026-09-28T02:26:53.832+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-005",
+      "descripcion": "Tercer pedido sin pagar",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "tres pedidos sin pagar → [201, 201, 409]",
+      "ejecutada_en": "2026-09-28T02:42:27.948+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-006",
+      "descripcion": "Pago rechazado y reintento aprobado",
+      "esperado": "pendiente tras el rechazo; confirmado tras el reintento",
+      "resultado": "PASA",
+      "evidencia": "pedido 23: rechazo 180234818175 (cc_rejected_other_reason) → pedido PENDIENTE; aprobado 181232752616 → pedido PREPARANDO",
+      "ejecutada_en": "2026-09-28T04:17:38.672+00:00",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-007",
+      "descripcion": "Pagar un pedido cancelado",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "pagar el pedido cancelado 15 → HTTP 409",
+      "ejecutada_en": "2026-09-28T02:42:28.225+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-008",
+      "descripcion": "Cancelar un pedido ya pagado",
+      "esperado": "409 y el pedido queda confirmado",
+      "resultado": "PASA",
+      "evidencia": "pedido 22: pago 181229589988 aprobado; estado al cancelar PENDIENTE; cancelación → HTTP 409; estado después PREPARANDO",
+      "ejecutada_en": "2026-09-28T04:12:41.300+00:00",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-009",
+      "descripcion": "Recomendaciones para un usuario vegano",
+      "esperado": "ningún producto no apto",
+      "resultado": "PASA",
+      "evidencia": "5 recomendados (phi3); no aptos: ninguno",
+      "ejecutada_en": "2026-09-28T02:42:28.397+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-010",
+      "descripcion": "Servicio de IA caído",
+      "esperado": "FALLBACK vacío; la compra sigue siendo posible",
+      "resultado": "PASA",
+      "evidencia": "recomendaciones → HTTP 200 FALLBACK; pedido → HTTP 201",
+      "ejecutada_en": "2026-09-28T02:42:32.666+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-011",
+      "descripcion": "Pedido con productos de T1 y T2",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "pedido con productos de T1 y T2 → HTTP 400",
+      "ejecutada_en": "2026-09-28T02:42:38.921+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-012",
+      "descripcion": "Pedido a una tienda inactiva",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "pedido a la tienda inactiva T3 → HTTP 400",
+      "ejecutada_en": "2026-09-28T02:42:39.188+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-013",
+      "descripcion": "La tienda pasa un pedido PENDIENTE a PREPARANDO",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "tienda PENDIENTE→PREPARANDO sin pago → HTTP 409",
+      "ejecutada_en": "2026-09-28T02:42:39.428+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-014",
+      "descripcion": "Estudiante cambia un estado o consulta un pedido ajeno",
+      "esperado": "403",
+      "resultado": "PASA",
+      "evidencia": "estudiante cambia estado → HTTP 403; otro estudiante consulta el pedido → HTTP 403",
+      "ejecutada_en": "2026-09-28T02:42:39.862+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-015",
+      "descripcion": "Flujo logístico completo e historial",
+      "esperado": "llega a ENTREGADO con todas las transiciones",
+      "resultado": "PASA",
+      "evidencia": "pedido 23: historial ['PREPARANDO', 'LISTO_PARA_RECOGER', 'EN_CAMINO', 'ENTREGADO']",
+      "ejecutada_en": "2026-09-28T04:17:39.122+00:00",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-016",
+      "descripcion": "Webhook sin firma o con firma inválida",
+      "esperado": "401 / 403",
+      "resultado": "PASA",
+      "evidencia": "sin firma → 401; firma falsa → 403",
+      "ejecutada_en": "2026-09-28T02:42:40.034+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-017",
+      "descripcion": "Propina mayor al 50 % del subtotal",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "propina del 100 % del subtotal → HTTP 400",
+      "ejecutada_en": "2026-09-28T02:42:40.110+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-018",
+      "descripcion": "Pago aprobado de un pedido ya cancelado",
+      "esperado": "intento de reembolso",
+      "resultado": "NO_VERIFICABLE_EN_SANDBOX",
+      "evidencia": "límite conocido del sandbox: MercadoPago rechaza el reembolso de pagos de prueba con 401 «Unauthorized use of live credentials» (observado el 27-09-2026). No se fuerza: además, al cancelar se cierra el checkout, así que el caso solo aparece si el pago llega mientras se cancela.",
+      "ejecutada_en": "2026-09-28T04:17:52.892+00:00",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-019",
+      "descripcion": "Producto agotado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=False",
+      "ejecutada_en": "2026-09-28T02:42:40.267+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-020",
+      "descripcion": "Producto pausado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=False",
+      "ejecutada_en": "2026-09-28T02:42:40.469+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-021",
+      "descripcion": "Producto no publicado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=True",
+      "ejecutada_en": "2026-09-28T02:42:40.678+00:00",
+      "fuente": "val_results_20260927-214240.json"
+    },
+    {
+      "id": "VAL-019",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda; la ficha no permite comprar",
+      "resultado": "PASA",
+      "evidencia": "Simulador, cuenta val.postest. Keke de naranja (T2), publicado con stock 0: no aparece en Inicio, en Buscar («T2») ni en el menú de la tienda T2, donde sí aparece el control disponible. Su ficha, desde Favoritos, muestra «Agotado» y «Agregar al carrito» deshabilitado. Capturas: results/val/evidencia/20260927-visibilidad/01–04 y 06",
+      "ejecutada_en": "2026-09-28T03:43:50.544+00:00",
+      "parte": "visual",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-020",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda; la ficha no permite comprar",
+      "resultado": "PASA",
+      "evidencia": "Simulador, cuenta val.postest. Queque de chocolate (T2), publicado y pausado (disponible = false, stock 15): no aparece en Inicio, Buscar ni en el menú de la tienda T2. Su ficha, desde Favoritos, muestra «Agotado» (la app usa la misma etiqueta para pausado) y «Agregar al carrito» deshabilitado. Capturas: results/val/evidencia/20260927-visibilidad/01–04 y 07",
+      "ejecutada_en": "2026-09-28T03:43:50.604+00:00",
+      "parte": "visual",
+      "fuente": "persona"
+    },
+    {
+      "id": "VAL-021",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda; la ficha no permite comprar",
+      "resultado": "FALLA",
+      "evidencia": "Simulador, cuenta val.postest. Combo taller (T2), sin publicar: no aparece en Inicio, Buscar ni en el menú de la tienda T2, PERO sí aparece en Perfil › Productos favoritos y su ficha tiene «Agregar al carrito» activo; el backend rechaza el pedido (HTTP 400 «Producto no disponible»). Solo es alcanzable si la cuenta ya lo tenía en favoritos. Capturas: results/val/evidencia/20260927-visibilidad/04 y 05",
+      "ejecutada_en": "2026-09-28T03:43:50.662+00:00",
+      "parte": "visual",
+      "fuente": "persona"
+    }
+  ]
+}

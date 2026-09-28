@@ -1,0 +1,203 @@
+{
+  "catalogo": {
+    "version": "C0",
+    "hash_catalogo": "99755133ab7de74908069ff46249f675636899ded3fa467a63257fbcfd72e08e",
+    "hash_estructura": "0830846999b71f296c07b691f9c2ce533341f960404940ff3d3ee6175a1f1eac",
+    "productos": 35,
+    "cargado_en": "2026-09-27T22:17:06.348435+00:00",
+    "uso": "prueba técnica"
+  },
+  "resultados": [
+    {
+      "id": "VAL-001",
+      "descripcion": "Cancelar un pedido pendiente",
+      "esperado": "CANCELADO, stock devuelto, checkout cerrado",
+      "resultado": "PASA",
+      "evidencia": "pedido 1: CANCELADO; stock 25→25; checkout vence 2026-09-27T17:17:08.472-05:00",
+      "ejecutada_en": "2026-09-27T22:17:06.444+00:00"
+    },
+    {
+      "id": "VAL-002",
+      "descripcion": "Pedir un producto agotado",
+      "esperado": "rechazo, stock sin cambios",
+      "resultado": "PASA",
+      "evidencia": "HTTP 400; stock sigue en 0",
+      "ejecutada_en": "2026-09-27T22:17:11.734+00:00"
+    },
+    {
+      "id": "VAL-003",
+      "descripcion": "Pedir más unidades que el stock",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "26 unidades → HTTP 400",
+      "ejecutada_en": "2026-09-27T22:17:12.028+00:00"
+    },
+    {
+      "id": "VAL-004",
+      "descripcion": "Caducidad de un pedido sin pagar",
+      "resultado": "NO_EJECUTADA",
+      "evidencia": "espera real de 15 min: usar `val ejecutar --incluir-caducidad`",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-005",
+      "descripcion": "Tercer pedido sin pagar",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "tres pedidos sin pagar → [201, 201, 409]",
+      "ejecutada_en": "2026-09-27T22:17:12.260+00:00"
+    },
+    {
+      "id": "VAL-006",
+      "descripcion": "Pago rechazado y reintento aprobado",
+      "esperado": "pendiente tras el rechazo; confirmado tras el reintento",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "pagar un checkout con titular OTHE y después con APRO",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-007",
+      "descripcion": "Pagar un pedido cancelado",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "pagar el pedido cancelado 4 → HTTP 409",
+      "ejecutada_en": "2026-09-27T22:17:12.538+00:00"
+    },
+    {
+      "id": "VAL-008",
+      "descripcion": "Cancelar un pedido ya pagado",
+      "esperado": "409 y el pedido queda confirmado",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "pagar con APRO y cancelar desde la app antes de la conciliación",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-009",
+      "descripcion": "Recomendaciones para un usuario vegano",
+      "esperado": "ningún producto no apto",
+      "resultado": "PASA",
+      "evidencia": "5 recomendados (phi3); no aptos: ninguno",
+      "ejecutada_en": "2026-09-27T22:17:12.712+00:00"
+    },
+    {
+      "id": "VAL-010",
+      "descripcion": "Servicio de IA caído",
+      "esperado": "FALLBACK vacío; la compra sigue siendo posible",
+      "resultado": "PASA",
+      "evidencia": "recomendaciones → HTTP 200 FALLBACK; pedido → HTTP 201",
+      "ejecutada_en": "2026-09-27T22:17:16.442+00:00"
+    },
+    {
+      "id": "VAL-011",
+      "descripcion": "Pedido con productos de T1 y T2",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "pedido con productos de T1 y T2 → HTTP 400",
+      "ejecutada_en": "2026-09-27T22:17:22.694+00:00"
+    },
+    {
+      "id": "VAL-012",
+      "descripcion": "Pedido a una tienda inactiva",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "pedido a la tienda inactiva T3 → HTTP 400",
+      "ejecutada_en": "2026-09-27T22:17:22.957+00:00"
+    },
+    {
+      "id": "VAL-013",
+      "descripcion": "La tienda pasa un pedido PENDIENTE a PREPARANDO",
+      "esperado": "409",
+      "resultado": "PASA",
+      "evidencia": "tienda PENDIENTE→PREPARANDO sin pago → HTTP 409",
+      "ejecutada_en": "2026-09-27T22:17:23.203+00:00"
+    },
+    {
+      "id": "VAL-014",
+      "descripcion": "Estudiante cambia un estado o consulta un pedido ajeno",
+      "esperado": "403",
+      "resultado": "PASA",
+      "evidencia": "estudiante cambia estado → HTTP 403; otro estudiante consulta el pedido → HTTP 403",
+      "ejecutada_en": "2026-09-27T22:17:23.648+00:00"
+    },
+    {
+      "id": "VAL-015",
+      "descripcion": "Flujo logístico completo e historial",
+      "esperado": "llega a ENTREGADO",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "lo ejerce cada ensayo u observación con compra aprobada (logística simulada)",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-016",
+      "descripcion": "Webhook sin firma o con firma inválida",
+      "esperado": "401 / 403",
+      "resultado": "PASA",
+      "evidencia": "sin firma → 401; firma falsa → 403",
+      "ejecutada_en": "2026-09-27T22:17:23.831+00:00"
+    },
+    {
+      "id": "VAL-017",
+      "descripcion": "Propina mayor al 50 % del subtotal",
+      "esperado": "rechazo",
+      "resultado": "PASA",
+      "evidencia": "propina del 100 % del subtotal → HTTP 400",
+      "ejecutada_en": "2026-09-27T22:17:23.911+00:00"
+    },
+    {
+      "id": "VAL-018",
+      "descripcion": "Pago aprobado de un pedido ya cancelado",
+      "esperado": "intento de reembolso",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "límite del sandbox: MercadoPago rechaza el reembolso con 401",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-019",
+      "descripcion": "Producto agotado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=False",
+      "ejecutada_en": "2026-09-27T22:17:24.061+00:00"
+    },
+    {
+      "id": "VAL-020",
+      "descripcion": "Producto pausado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=False",
+      "ejecutada_en": "2026-09-27T22:17:24.296+00:00"
+    },
+    {
+      "id": "VAL-021",
+      "descripcion": "Producto no publicado (parte API)",
+      "esperado": "no aparece en las listas",
+      "resultado": "PASA",
+      "evidencia": "en listas de la app: no; ficha HTTP 200, disponible=True",
+      "ejecutada_en": "2026-09-27T22:17:24.503+00:00"
+    },
+    {
+      "id": "VAL-019",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "comprobar en el iPhone",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-020",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "comprobar en el iPhone",
+      "ejecutada_en": null
+    },
+    {
+      "id": "VAL-021",
+      "descripcion": "Parte visual en la app",
+      "esperado": "no aparece en Inicio, tienda ni búsqueda",
+      "resultado": "PENDIENTE_PERSONA",
+      "evidencia": "comprobar en el iPhone",
+      "ejecutada_en": null
+    }
+  ]
+}

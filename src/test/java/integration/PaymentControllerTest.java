@@ -27,7 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Webhook de MercadoPago: firma HMAC válida, firma inválida y notificación sin tema.
+ * Webhook de MercadoPago: firma HMAC, formato actual ({@code type}) y antiguo ({@code topic}),
+ * eventos que no son de pago y notificación sin tipo.
  */
 @SpringBootTest(
         classes = {
@@ -45,10 +46,47 @@ class PaymentControllerTest {
     private MockMvc mockMvc;
 
     @Autowired private WebApplicationContext webApplicationContext;
+    @Autowired private ProcessWebhookUseCase processWebhookUseCase;
 
     @org.junit.jupiter.api.BeforeEach
     void setUpMockMvc() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        Mockito.clearInvocations(processWebhookUseCase);
+    }
+
+    /** Formato de los webhooks actuales: {@code ?data.id=…&type=payment}, sin {@code topic}. */
+    @Test
+    void webhook_type_payment_is_processed() throws Exception {
+        String dataId = "123";
+        long ts = System.currentTimeMillis() / 1000L;
+
+        mockMvc.perform(post("/payments/webhook")
+                        .queryParam("data.id", dataId)
+                        .queryParam("type", "payment")
+                        .header("x-request-id", "request-1")
+                        .header("x-signature", signature(dataId, "request-1", ts))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body(dataId)))
+                .andExpect(status().isOk());
+
+        Mockito.verify(processWebhookUseCase).execute(Mockito.argThat(event -> dataId.equals(event.externalId())));
+    }
+
+    @Test
+    void webhook_non_payment_event_is_ignored() throws Exception {
+        String dataId = "123";
+        long ts = System.currentTimeMillis() / 1000L;
+
+        mockMvc.perform(post("/payments/webhook")
+                        .queryParam("data.id", dataId)
+                        .queryParam("type", "topic_merchant_order_wh")
+                        .header("x-request-id", "request-1")
+                        .header("x-signature", signature(dataId, "request-1", ts))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"topic_merchant_order_wh\",\"data\":{\"id\":\"123\"}}"))
+                .andExpect(status().isOk());
+
+        Mockito.verifyNoInteractions(processWebhookUseCase);
     }
 
     @Test
@@ -79,7 +117,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    void webhook_missing_topic_returns_400() throws Exception {
+    void webhook_missing_event_type_returns_400() throws Exception {
         String dataId = "123";
         long ts = System.currentTimeMillis() / 1000L;
 

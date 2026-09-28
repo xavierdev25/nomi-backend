@@ -46,6 +46,15 @@ class OrderDomainServiceTest {
     }
 
     @Test
+    @DisplayName("La transición conserva el plazo de pago")
+    void transicion_conserva_plazo_de_pago() {
+        LocalDateTime deadline = LocalDateTime.now().plusMinutes(15);
+        Order conPlazo = Order.builder().id(1L).status(OrderStatus.PENDIENTE).pagoExpiraEn(deadline).build();
+
+        assertEquals(deadline, service.applyStatusTransition(conPlazo, OrderStatus.PREPARANDO).getPagoExpiraEn());
+    }
+
+    @Test
     @DisplayName("PENDIENTE puede transicionar a CANCELADO")
     void pendiente_to_cancelado() {
         Order result = service.applyStatusTransition(orderPendiente, OrderStatus.CANCELADO);

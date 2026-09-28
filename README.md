@@ -59,7 +59,7 @@ docker compose up -d postgres redis
 ./mvnw test
 ```
 
-68 tests: unitarios, de controlador con MockMvc y de integración. Los de integración (perfil
+169 tests: unitarios, de controlador con MockMvc y de integración. Los de integración (perfil
 `test`) necesitan PostgreSQL en `localhost:5432` (base `nomi_db`, usuario `nomi_user`) y Redis
 en `6380`. Detalle en [docs/TESTING.md](docs/TESTING.md).
 
